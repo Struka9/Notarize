@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             val password = getString(R.string.temp_password)
             var notaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_WalletFileName), password)
             var adversaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_UnauthorizedWalletFileName), password)
-            if (adversaryCredentials != null) {
+            if (notaryCredentials != null && adversaryCredentials != null) {
                 try {
                     var receipt = Transfer.sendFunds(
                         web3,
