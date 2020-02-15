@@ -4,13 +4,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 public class EthereumManager {
@@ -78,4 +84,28 @@ public class EthereumManager {
 
         return credentials;
     }
+
+    /*
+    public void signDocument(Web3j web3j, String from, String contractAddress, String documentHash, String ipfsHash) {
+        Function function = new Function(
+                "signDocument",  // function we're calling
+                Arrays.asList(new Utf8String(documentHash), new Utf8String(ipfsHash)),  // Parameters to pass as Solidity Types
+                Collections.emptyList());
+
+        String encodedFunction = FunctionEncoder.encode(function);
+        Transaction transaction = Transaction.createFunctionCallTransaction(
+                from, <gasPrice>, <gasLimit>, contractAddress, <funds>, encodedFunction);
+
+        try {
+            org.web3j.protocol.core.methods.response.EthSendTransaction transactionResponse =
+                    web3j.ethSendTransaction(transaction).sendAsync().get();
+
+            String transactionHash = transactionResponse.getTransactionHash();
+            Log.d("TEST", "Notarized: " + transactionHash);
+        } catch (Exception e) {
+            Log.d("TEST", "Couldn't notarize");
+            e.printStackTrace();
+        }
+
+    }*/
 }

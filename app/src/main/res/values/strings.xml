@@ -14,4 +14,6 @@
     <string name="k_WalletSharedPreferences">NotarizeSharedPreferences</string>
     <string name="k_WalletFileName">k_WalletFileName</string>
     <string name="k_UnauthorizedWalletFileName">k_UnauthorizedWalletFileName</string>
+    <string name="signDocumentFunction">signDocument</string>
+    <string name="notarySmartContract">0xd57C76f13344D9D753639647199A07d85EA97Cbd</string>
 </resources>
