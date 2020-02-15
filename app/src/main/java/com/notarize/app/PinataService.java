@@ -20,7 +20,7 @@ public interface PinataService {
 
     @Multipart
     @POST("pinning/pinFileToIPFS")
-    Call<JsonObject> pinFileToIPFS(
+    Call<IpfsObject> pinFileToIPFS(
             @Header("pinata_api_key") String pinataAPIKey,
             @Header("pinata_secret_api_key") String pinataAPISecret,
             @Part MultipartBody.Part file);

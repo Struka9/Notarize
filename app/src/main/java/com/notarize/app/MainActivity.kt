@@ -27,57 +27,16 @@ class MainActivity : AppCompatActivity() {
         uploadButton.setOnClickListener{
             Log.d("TEST", "FIRST LOG MESSAGE")
 
-            var retrofit = Retrofit.Builder().baseUrl("https://api.pinata.cloud/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-            var pinata = retrofit.create(PinataService::class.java)
-
-
-            /*pinata.pinList().enqueue(object : Callback<JsonObject> {
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    Log.d("TEST", t.message)
-                }
-
-                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-
-                    if (response.code() == 200) {
-                        Log.d("TEST", "Something worked")
-                        val body = response.body()!!
-                        Log.d("TEST", body.toString())
-                    } else {
-                        Log.d("TEST", "Something Kind Of worked")
-                        Log.d("TEST", "CODE " + response.code())
-                    }
-                }
-
-            })*/
-
             // Create a request body with file and image media type
             val fileReqBody = RequestBody.create(MediaType.parse("text/plain"), "This is the file content")
-            // Create MultipartBody.Part using file request-body,file name and part name
-            val part = MultipartBody.Part.createFormData("file", "file3.txt", fileReqBody)
+            val fileName = "file3.txt"
 
-            pinata.pinFileToIPFS(
+            val ipfsManager = IpfsManager(
                 getString(R.string.pinata_header_1),
-                getString(R.string.pinata_header_2),
-                part).enqueue(object : Callback<JsonObject> {
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    Log.d("TEST", t.message)
-                }
+                getString(R.string.pinata_header_2))
 
-                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+            ipfsManager.uploadFile(fileName, fileReqBody)
 
-                    if (response.code() == 200) {
-                        Log.d("TEST", "Something worked")
-                        val body = response.body()!!
-                        Log.d("TEST", body.toString())
-                    } else {
-                        Log.d("TEST", "Something Kind Of worked")
-                        Log.d("TEST", "CODE " + response.code())
-                    }
-                }
-
-            })
         }
     }
 }
