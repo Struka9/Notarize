@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">notarize</string>
+    <string name="title_activity_upload_file_to_ipfs">UploadFileToIPFS</string>
 </resources>
