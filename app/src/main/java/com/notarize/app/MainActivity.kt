@@ -1,5 +1,7 @@
 package com.notarize.app
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -45,22 +47,40 @@ class MainActivity : AppCompatActivity() {
             var ethereumManager = EthereumManager()
             ethereumManager.connectToNetwork(getString(R.string.testnet_infura_endpoint))
 
+            var sharedPreferences = getSharedPreferences("NotarizeSharedPreferences", Context.MODE_PRIVATE);
+            var walletFileName = sharedPreferences.getString("k_WalletFileName", "")
+
             var password = getString(R.string.temp_password)
 
             var walletPath = getFilesDir().getAbsolutePath()
             var walletDir = File(walletPath)
 
-            try {
-                var walletName = WalletUtils.generateNewWalletFile(password, walletDir)
-                Log.d("TEST", "Wallet name: " + walletName)
+            if (walletFileName == null || walletFileName.equals("")) {
+                //There is no wallet, create the wallet
+                try {
+                    var walletName = WalletUtils.generateNewWalletFile(password, walletDir)
+                    Log.d("TEST", "Wallet name: " + walletName)
 
-                var walletFile = File(walletDir, walletName)
+                    //Save the walletName
+                    var editor = sharedPreferences.edit()
+                    editor.putString("k_WalletFileName", walletName)
+                    editor.commit()
+
+                    var walletFile = File(walletDir, walletName)
+                    var credentials = WalletUtils.loadCredentials(password, walletFile)
+
+                    Log.d("TEST" , "Your wallet address is: " + credentials.address)
+                } catch (e : Exception) {
+                    e.printStackTrace()
+                }
+            } else {
+                Log.d("TEST", "Loading Wallet name: " + walletFileName)
+                var walletFile = File(walletDir, walletFileName)
                 var credentials = WalletUtils.loadCredentials(password, walletFile)
-
                 Log.d("TEST" , "Your wallet address is: " + credentials.address)
-            } catch (e : Exception) {
-                e.printStackTrace()
             }
+
+
 
         }
     }

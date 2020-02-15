@@ -9,6 +9,8 @@ import org.web3j.protocol.http.HttpService;
 import java.util.concurrent.ExecutionException;
 
 public class EthereumManager {
+
+
     public void connectToNetwork(String network) {
         Web3j web3 = Web3j.build(new HttpService(network));
 
