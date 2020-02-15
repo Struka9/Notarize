@@ -92,11 +92,7 @@ class PhotoActivity : AppCompatActivity() {
 
     private fun takePicture() {
         disableActions()
-        if (saveImageSwitch.isChecked) {
-            savePictureToFile()
-        } else {
-            savePictureToMemory()
-        }
+        savePictureToMemory()
     }
 
     private fun savePictureToFile() {
@@ -322,14 +318,12 @@ class PhotoActivity : AppCompatActivity() {
         previewView.isClickable = false
         takenImage.isClickable = false
         toggleCameraLens.isClickable = false
-        saveImageSwitch.isClickable = false
     }
 
     private fun enableActions() {
         previewView.isClickable = true
         takenImage.isClickable = true
         toggleCameraLens.isClickable = true
-        saveImageSwitch.isClickable = true
     }
 
     override fun onRequestPermissionsResult(
