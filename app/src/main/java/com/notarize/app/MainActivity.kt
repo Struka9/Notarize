@@ -16,6 +16,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.MediaType
+import org.web3j.crypto.WalletUtils
+import java.io.File
+import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
@@ -41,6 +44,24 @@ class MainActivity : AppCompatActivity() {
 
             var ethereumManager = EthereumManager()
             ethereumManager.connectToNetwork(getString(R.string.testnet_infura_endpoint))
+
+            var password = getString(R.string.temp_password)
+
+            var walletPath = getFilesDir().getAbsolutePath()
+            var walletDir = File(walletPath)
+
+            try {
+                var walletName = WalletUtils.generateNewWalletFile(password, walletDir)
+                Log.d("TEST", "Wallet name: " + walletName)
+
+                var walletFile = File(walletDir, walletName)
+                var credentials = WalletUtils.loadCredentials(password, walletFile)
+
+                Log.d("TEST" , "Your wallet address is: " + credentials.address)
+            } catch (e : Exception) {
+                e.printStackTrace()
+            }
+
         }
     }
 }
