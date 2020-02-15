@@ -40,47 +40,14 @@ class MainActivity : AppCompatActivity() {
             var ethereumManager = EthereumManager()
             var web3 = ethereumManager.connectToNetwork(getString(R.string.testnet_infura_endpoint))
 
-            /*var sharedPreferences = getSharedPreferences(getString(R.string.k_WalletSharedPreferences), Context.MODE_PRIVATE);
-            var walletFileName = sharedPreferences.getString(getString(R.string.k_WalletFileName), "")
-
-            var password = getString(R.string.temp_password)
-
-            var walletPath = getFilesDir().getAbsolutePath()
-            var walletDir = File(walletPath)
-
-            var credentials : Credentials? = null
-
-            var validCredentials = false
-
-            if (walletFileName == null || walletFileName.equals("")) {
-                //There is no wallet, create the wallet
-                try {
-                    var walletName = WalletUtils.generateNewWalletFile(password, walletDir)
-                    Log.d("TEST", "Wallet name: " + walletName)
-
-                    //Save the walletName
-                    var editor = sharedPreferences.edit()
-                    editor.putString(getString(R.string.k_WalletFileName), walletName)
-                    editor.commit()
-
-                    var walletFile = File(walletDir, walletName)
-                    credentials = WalletUtils.loadCredentials(password, walletFile)
-                    validCredentials = true
-                    Log.d("TEST" , "Your wallet address is: " + credentials.address)
-                } catch (e : Exception) {
-                    e.printStackTrace()
-                }
-            } else {
-                Log.d("TEST", "Loading Wallet name: " + walletFileName)
-                var walletFile = File(walletDir, walletFileName)
-                credentials = WalletUtils.loadCredentials(password, walletFile)
-                validCredentials = true
-                Log.d("TEST" , "Your wallet address is: " + credentials.address)
-            }*/
 
             val password = getString(R.string.temp_password)
             var notaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_WalletFileName), password)
             var adversaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_UnauthorizedWalletFileName), password)
+
+
+            /*
+            //Send Funds
             if (notaryCredentials != null && adversaryCredentials != null) {
                 try {
                     var receipt = Transfer.sendFunds(
@@ -98,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
             } else {
                 Log.d("TEST", "Credentials are not valid :S")
-            }
+            }*/
 
 
         }
