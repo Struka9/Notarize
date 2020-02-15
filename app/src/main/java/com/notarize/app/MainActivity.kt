@@ -1,21 +1,11 @@
 package com.notarize.app
 
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.FileUtils
-import android.os.StrictMode
 import android.util.Log
-import com.google.gson.JsonObject
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.MediaType
+import okhttp3.RequestBody
 
 
 class MainActivity : AppCompatActivity() {

@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">notarize</string>
     <string name="title_activity_upload_file_to_ipfs">UploadFileToIPFS</string>
+    <string name="take">Take</string>
+    <string name="rationale_camera">We need the camera to make this work</string>
+    <string name="image_capture_failed">Failed to capture the image</string>
+    <string name="image_save_failed">Failed to save the image</string>
+    <string name="extension_unavailable">This feature is not available.</string>
+    <string name="extension_feature_prompt">Camera Features</string>
+    <string name="toggle_camera_lens">Toggle Camera</string>
+    <string name="save_image">Save Image</string>
+    <string name="taken_image">Taken Image</string>
+    <string name="image_popup">Image</string>
 </resources>
