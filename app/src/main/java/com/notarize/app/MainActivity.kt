@@ -2,18 +2,18 @@ package com.notarize.app
 
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.MediaType
+import org.web3j.crypto.Credentials
 import org.web3j.crypto.WalletUtils
+import org.web3j.protocol.core.methods.response.TransactionReceipt
+import org.web3j.tx.Transfer
+import org.web3j.utils.Convert
 import java.io.File
 import java.lang.Exception
-import okhttp3.RequestBody
-
+import java.math.BigDecimal
 
 
 class MainActivity : AppCompatActivity() {
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
              */
 
             var ethereumManager = EthereumManager()
-            ethereumManager.connectToNetwork(getString(R.string.testnet_infura_endpoint))
+            var web3 = ethereumManager.connectToNetwork(getString(R.string.testnet_infura_endpoint))
 
             var sharedPreferences = getSharedPreferences("NotarizeSharedPreferences", Context.MODE_PRIVATE);
             var walletFileName = sharedPreferences.getString("k_WalletFileName", "")
@@ -47,6 +47,10 @@ class MainActivity : AppCompatActivity() {
 
             var walletPath = getFilesDir().getAbsolutePath()
             var walletDir = File(walletPath)
+
+            var credentials : Credentials? = null
+
+            var validCredentials = false
 
             if (walletFileName == null || walletFileName.equals("")) {
                 //There is no wallet, create the wallet
@@ -60,8 +64,8 @@ class MainActivity : AppCompatActivity() {
                     editor.commit()
 
                     var walletFile = File(walletDir, walletName)
-                    var credentials = WalletUtils.loadCredentials(password, walletFile)
-
+                    credentials = WalletUtils.loadCredentials(password, walletFile)
+                    validCredentials = true
                     Log.d("TEST" , "Your wallet address is: " + credentials.address)
                 } catch (e : Exception) {
                     e.printStackTrace()
@@ -69,10 +73,20 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d("TEST", "Loading Wallet name: " + walletFileName)
                 var walletFile = File(walletDir, walletFileName)
-                var credentials = WalletUtils.loadCredentials(password, walletFile)
+                credentials = WalletUtils.loadCredentials(password, walletFile)
+                validCredentials = true
                 Log.d("TEST" , "Your wallet address is: " + credentials.address)
             }
 
+            if (validCredentials) {
+                var receipt = Transfer.sendFunds(web3, credentials, "",
+                    BigDecimal(10000000), Convert.Unit.GWEI).sendAsync().get()
+
+                Log.d("TEXT", "Transaction receipt: " + receipt.transactionHash)
+
+            } else {
+                Log.d("TEST", "Credentials are not valid :S")
+            }
 
 
         }

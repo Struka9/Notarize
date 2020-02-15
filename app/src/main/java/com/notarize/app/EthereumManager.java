@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutionException;
 public class EthereumManager {
 
 
-    public void connectToNetwork(String network) {
+    public Web3j connectToNetwork(String network) {
         Web3j web3 = Web3j.build(new HttpService(network));
 
         try {
@@ -29,5 +29,7 @@ public class EthereumManager {
             e.printStackTrace();
             Log.d("EthereumManager", "Exception Connecting to " + network);
         }
+
+        return web3;
     }
 }
