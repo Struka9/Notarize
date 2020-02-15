@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="extension_features">
+        <item>None</item>
+        <item>Bokeh</item>
+        <item>HDR</item>
+        <item>Night Mode</item>
+    </string-array>
+</resources>

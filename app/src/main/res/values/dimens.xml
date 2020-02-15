@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dp_32">32dp</dimen>
+
+    <dimen name="toggle_camera_lens_padding">16dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
+
+    <!-- Text Sizes -->
+    <dimen name="sp_16">16sp</dimen>
+</resources>
