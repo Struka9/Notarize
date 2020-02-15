@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             var ethereumManager = EthereumManager()
             var web3 = ethereumManager.connectToNetwork(getString(R.string.testnet_infura_endpoint))
 
-            var sharedPreferences = getSharedPreferences(getString(R.string.k_WalletSharedPreferences), Context.MODE_PRIVATE);
+            /*var sharedPreferences = getSharedPreferences(getString(R.string.k_WalletSharedPreferences), Context.MODE_PRIVATE);
             var walletFileName = sharedPreferences.getString(getString(R.string.k_WalletFileName), "")
 
             var password = getString(R.string.temp_password)
@@ -76,9 +76,10 @@ class MainActivity : AppCompatActivity() {
                 credentials = WalletUtils.loadCredentials(password, walletFile)
                 validCredentials = true
                 Log.d("TEST" , "Your wallet address is: " + credentials.address)
-            }
+            }*/
 
-            if (validCredentials) {
+            var credentials : Credentials? = ethereumManager.loadCredentials(this)
+            if (credentials != null) {
                 var receipt = Transfer.sendFunds(
                     web3,
                     credentials,
