@@ -40,8 +40,8 @@ class MainActivity : AppCompatActivity() {
             var ethereumManager = EthereumManager()
             var web3 = ethereumManager.connectToNetwork(getString(R.string.testnet_infura_endpoint))
 
-            var sharedPreferences = getSharedPreferences("NotarizeSharedPreferences", Context.MODE_PRIVATE);
-            var walletFileName = sharedPreferences.getString("k_WalletFileName", "")
+            var sharedPreferences = getSharedPreferences(getString(R.string.k_WalletSharedPreferences), Context.MODE_PRIVATE);
+            var walletFileName = sharedPreferences.getString(getString(R.string.k_WalletFileName), "")
 
             var password = getString(R.string.temp_password)
 
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
                     //Save the walletName
                     var editor = sharedPreferences.edit()
-                    editor.putString("k_WalletFileName", walletName)
+                    editor.putString(getString(R.string.k_WalletFileName), walletName)
                     editor.commit()
 
                     var walletFile = File(walletDir, walletName)
@@ -79,8 +79,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (validCredentials) {
-                var receipt = Transfer.sendFunds(web3, credentials, "",
-                    BigDecimal(10000000), Convert.Unit.GWEI).sendAsync().get()
+                var receipt = Transfer.sendFunds(
+                    web3,
+                    credentials,
+                    getString(R.string.temp_destination_address),
+                    BigDecimal(10000000),
+                    Convert.Unit.GWEI).sendAsync().get()
 
                 Log.d("TEXT", "Transaction receipt: " + receipt.transactionHash)
 

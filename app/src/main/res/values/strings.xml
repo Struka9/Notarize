@@ -11,4 +11,7 @@
     <string name="save_image">Save Image</string>
     <string name="taken_image">Taken Image</string>
     <string name="image_popup">Image</string>
+    <string name="k_WalletSharedPreferences">NotarizeSharedPreferences</string>
+    <string name="k_WalletFileName">k_WalletFileName</string>
+    <string name="k_UnauthorizedWalletFileName">k_UnauthorizedWalletFileName</string>
 </resources>
