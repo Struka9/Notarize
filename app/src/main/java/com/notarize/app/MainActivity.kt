@@ -57,7 +57,10 @@ class MainActivity : AppCompatActivity() {
             // Create MultipartBody.Part using file request-body,file name and part name
             val part = MultipartBody.Part.createFormData("file", "file3.txt", fileReqBody)
 
-            pinata.pinFileToIPFS(part).enqueue(object : Callback<JsonObject> {
+            pinata.pinFileToIPFS(
+                getString(R.string.pinata_header_1),
+                getString(R.string.pinata_header_2),
+                part).enqueue(object : Callback<JsonObject> {
                 override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                     Log.d("TEST", t.message)
                 }

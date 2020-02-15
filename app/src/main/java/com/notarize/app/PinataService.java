@@ -1,10 +1,13 @@
 package com.notarize.app;
 
+import android.content.res.Resources;
+
 import com.google.gson.JsonObject;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -17,5 +20,8 @@ public interface PinataService {
 
     @Multipart
     @POST("pinning/pinFileToIPFS")
-    Call<JsonObject> pinFileToIPFS(@Part MultipartBody.Part file);
+    Call<JsonObject> pinFileToIPFS(
+            @Header("pinata_api_key") String pinataAPIKey,
+            @Header("pinata_secret_api_key") String pinataAPISecret,
+            @Part MultipartBody.Part file);
 }
