@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         uploadButton.setOnClickListener{
             Log.d("TEST", "FIRST LOG MESSAGE")
 
+            /*
             // Create a request body with file and image media type
             val fileReqBody = RequestBody.create(MediaType.parse("text/plain"), "This is the file content")
             val fileName = "file3.txt"
@@ -36,7 +37,10 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.pinata_header_2))
 
             ipfsManager.uploadFile(fileName, fileReqBody)
+             */
 
+            var ethereumManager = EthereumManager()
+            ethereumManager.connectToNetwork(getString(R.string.testnet_infura_endpoint))
         }
     }
 }
