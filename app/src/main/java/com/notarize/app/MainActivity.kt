@@ -78,16 +78,23 @@ class MainActivity : AppCompatActivity() {
                 Log.d("TEST" , "Your wallet address is: " + credentials.address)
             }*/
 
-            var credentials : Credentials? = ethereumManager.loadCredentials(this)
-            if (credentials != null) {
-                var receipt = Transfer.sendFunds(
-                    web3,
-                    credentials,
-                    getString(R.string.temp_destination_address),
-                    BigDecimal(10000000),
-                    Convert.Unit.GWEI).sendAsync().get()
+            val password = getString(R.string.temp_password)
+            var notaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_WalletFileName), password)
+            var adversaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_UnauthorizedWalletFileName), password)
+            if (adversaryCredentials != null) {
+                try {
+                    var receipt = Transfer.sendFunds(
+                        web3,
+                        adversaryCredentials,
+                        getString(R.string.temp_destination_address),
+                        BigDecimal(10000000),
+                        Convert.Unit.GWEI).sendAsync().get()
 
-                Log.d("TEXT", "Transaction receipt: " + receipt.transactionHash)
+                    Log.d("TEXT", "Transaction receipt: " + receipt.transactionHash)
+                } catch (e : Exception) {
+                    e.printStackTrace()
+                }
+
 
             } else {
                 Log.d("TEST", "Credentials are not valid :S")

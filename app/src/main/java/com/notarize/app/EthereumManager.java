@@ -38,11 +38,9 @@ public class EthereumManager {
         return web3;
     }
 
-    public Credentials loadCredentials(Context context) {
+    public Credentials loadCredentials(Context context, String sharedPreferencesKey, String password) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.k_WalletSharedPreferences), Context.MODE_PRIVATE);
-        String walletFileName = sharedPreferences.getString(context.getString(R.string.k_WalletFileName), "");
-
-        String password = context.getString(R.string.temp_password);
+        String walletFileName = sharedPreferences.getString(sharedPreferencesKey, "");
 
         String walletPath = context.getFilesDir().getAbsolutePath();
         File walletDir = new File(walletPath);
@@ -58,7 +56,7 @@ public class EthereumManager {
 
                 //Save the walletName
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(context.getString(R.string.k_WalletFileName), walletName);
+                editor.putString(sharedPreferencesKey, walletName);
                 editor.commit();
 
                 File walletFile = new File(walletDir, walletName);
