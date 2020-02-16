@@ -13,6 +13,8 @@ import org.web3j.abi.datatypes.Function
 import org.web3j.abi.datatypes.Type
 import org.web3j.abi.datatypes.Utf8String
 import org.web3j.crypto.Credentials
+import org.web3j.crypto.Hash
+import org.web3j.crypto.Sign
 import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.tx.gas.DefaultGasProvider
@@ -33,8 +35,10 @@ class MainActivity : AppCompatActivity() {
             Log.d("TEST", "FIRST LOG MESSAGE")
 
 
+            var content = "This is the file content"
+
             // Create a request body with file and image media type
-            val fileReqBody = RequestBody.create(MediaType.parse("text/plain"), "This is the file content")
+            val fileReqBody = RequestBody.create(MediaType.parse("text/plain"), content)
             val fileName = "file3.txt"
 
             val ipfsManager = IpfsManager(
@@ -46,8 +50,14 @@ class MainActivity : AppCompatActivity() {
             val password = getString(R.string.temp_password)
             var notaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_WalletFileName), password)
 
+            //var hashedContent = Hash.hmacSha512(content.encodeToByteArray(), notaryCredentials.)
             //var adversaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_UnauthorizedWalletFileName), password)
 
+            /*
+            if (notaryCredentials != null) {
+                var signatureData = Sign.signMessage(content.toByteArray(Charsets.UTF_8), notaryCredentials?.ecKeyPair)
+                Log.d("TEXT", "Signature: " + signatureData.toString())
+            }*/
 
             //Upload file to IPFS
             ipfsManager.uploadFile(fileName, fileReqBody, object : Callback<IpfsObject> {
@@ -65,6 +75,7 @@ class MainActivity : AppCompatActivity() {
 
                         var smartContract = TallyLock.load(getString(R.string.tallyLockSmartContractAddress), web3, notaryCredentials, DefaultGasProvider.GAS_PRICE, DefaultGasProvider.GAS_LIMIT)
                         //var smartContract = TallyLock.load(getString(R.string.tallyLockSmartContractAddress), web3, notaryCredentials, DefaultGasProvider.GAS_PRICE, DefaultGasProvider.GAS_LIMIT)
+
 
                         //If Uploaded correctly send to the SmartContract for logging
                         var receipt = smartContract.signDocument(
