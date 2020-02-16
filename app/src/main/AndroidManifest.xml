@@ -16,20 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
-        android:name=".NotarizeApplication"
-        >
-
-
+        android:name=".NotarizeApplication">
         <activity
             android:name=".UploadFileToIPFS"
             android:label="@string/title_activity_upload_file_to_ipfs"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -42,7 +34,11 @@
         </provider>
 
         <activity android:name=".PhotoActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

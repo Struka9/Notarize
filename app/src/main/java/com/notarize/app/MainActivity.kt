@@ -1,28 +1,18 @@
 package com.notarize.app
 
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import org.web3j.abi.FunctionEncoder
-import org.web3j.abi.datatypes.Function
-import org.web3j.abi.datatypes.Type
-import org.web3j.abi.datatypes.Utf8String
 import org.web3j.crypto.Credentials
-import org.web3j.crypto.Hash
-import org.web3j.crypto.Sign
-import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.tx.gas.DefaultGasProvider
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,11 +21,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        var fileHash = intent.getStringExtra(EXTRA_FILE_HASH);
+
         uploadButton.setOnClickListener{
             Log.d("TEST", "FIRST LOG MESSAGE")
 
 
-            var content = "This is the file content"
+            var content = fileHash
 
             // Create a request body with file and image media type
             val fileReqBody = RequestBody.create(MediaType.parse("text/plain"), content)
@@ -70,10 +62,14 @@ class MainActivity : AppCompatActivity() {
                     if (response.code() == 200) {
                         Log.d("TEST", "Something worked")
                         val body = response.body()!!
-                        Log.d("TEST", body.IpfsHash)
+                        Log.d("TEST", "IPFSHash: " + body.IpfsHash)
 
 
-                        var smartContract = TallyLock.load(getString(R.string.tallyLockSmartContractAddress), web3, notaryCredentials, DefaultGasProvider.GAS_PRICE, DefaultGasProvider.GAS_LIMIT)
+                        var smartContract: TallyLock = TallyLock.load(getString(R.string.tallyLockSmartContractAddress),
+                            web3,
+                            notaryCredentials,
+                            DefaultGasProvider.GAS_PRICE,
+                            DefaultGasProvider.GAS_LIMIT)
                         //var smartContract = TallyLock.load(getString(R.string.tallyLockSmartContractAddress), web3, notaryCredentials, DefaultGasProvider.GAS_PRICE, DefaultGasProvider.GAS_LIMIT)
 
 
