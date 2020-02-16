@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TallyCheckContract</string>
+    <string name="k_WalletSharedPreferences">NotarizeSharedPreferences</string>
+    <string name="tallyLockSmartContractAddress">0xd57C76f13344D9D753639647199A07d85EA97Cbd</string>
+</resources>

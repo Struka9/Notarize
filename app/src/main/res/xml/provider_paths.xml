@@ -3,7 +3,4 @@
     <external-path
         name="Pictures"
         path="Pictures/"/>
-
-    <cache-path
-        name="shared_images" path="images/"/>
 </paths>

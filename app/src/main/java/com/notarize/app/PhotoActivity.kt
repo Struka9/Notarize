@@ -11,17 +11,13 @@ import android.graphics.drawable.Drawable
 import android.media.Image
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
-import androidx.camera.extensions.BokehImageCaptureExtender
-import androidx.camera.extensions.HdrImageCaptureExtender
-import androidx.camera.extensions.ImageCaptureExtender
-import androidx.camera.extensions.NightImageCaptureExtender
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -31,7 +27,6 @@ import com.notarize.app.ImagePopupView.Companion.FADING_ANIMATION_DURATION
 import com.notarize.app.ext.toHexString
 import com.notarize.app.ext.toSha256
 import kotlinx.android.synthetic.main.activity_photo.*
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -65,9 +60,7 @@ class PhotoActivity : AppCompatActivity() {
 
         bt_upload.setOnClickListener {
             val bitmap = takenImage.drawable.toBitmap()
-            val bso = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 70, bso)
-            val byteArray = bso.toByteArray()
+            val byteArray = bitmap.toByteArray()
             bitmap.recycle()
 
             startActivityForResult(
@@ -113,21 +106,21 @@ class PhotoActivity : AppCompatActivity() {
             return@setOnLongClickListener true
         }
 
-        extensionFeatures.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parentView: AdapterView<*>,
-                    selectedItemView: View,
-                    position: Int,
-                    id: Long
-                ) {
-                    if (ExtensionFeature.fromPosition(position) != ExtensionFeature.NONE) {
-                        previewView.post { startCamera() }
-                    }
-                }
-
-                override fun onNothingSelected(parentView: AdapterView<*>) {}
-            }
+//        extensionFeatures.onItemSelectedListener =
+//            object : AdapterView.OnItemSelectedListener {
+//                override fun onItemSelected(
+//                    parentView: AdapterView<*>,
+//                    selectedItemView: View,
+//                    position: Int,
+//                    id: Long
+//                ) {
+//                    if (ExtensionFeature.fromPosition(position) != ExtensionFeature.NONE) {
+//                        previewView.post { startCamera() }
+//                    }
+//                }
+//
+//                override fun onNothingSelected(parentView: AdapterView<*>) {}
+//            }
     }
 
     private fun requestPermissions() {
@@ -143,7 +136,7 @@ class PhotoActivity : AppCompatActivity() {
 
     private fun takePicture() {
         disableActions()
-        savePictureToFile()
+        savePictureToMemory()
     }
 
     private fun savePictureToFile() {
@@ -214,6 +207,14 @@ class PhotoActivity : AppCompatActivity() {
                         )
                         runOnUiThread {
                             takenImage.setImageBitmap(bitmap)
+
+                            val path = MediaStore.Images.Media.insertImage(
+                                contentResolver,
+                                bitmap, "doc", null
+                            )
+
+                            imageUri = Uri.parse(path)
+
                             bt_upload.visibility = View.VISIBLE
                             enableActions()
                         }
@@ -324,34 +325,34 @@ class PhotoActivity : AppCompatActivity() {
                 setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
             }
 
-        applyExtensions(imageCaptureConfig)
+//        applyExtensions(imageCaptureConfig)
         return ImageCapture(imageCaptureConfig.build())
     }
 
-    private fun applyExtensions(builder: ImageCaptureConfig.Builder) {
-        when (ExtensionFeature.fromPosition(extensionFeatures.selectedItemPosition)) {
-            ExtensionFeature.BOKEH ->
-                enableExtensionFeature(BokehImageCaptureExtender.create(builder))
-            ExtensionFeature.HDR ->
-                enableExtensionFeature(HdrImageCaptureExtender.create(builder))
-            ExtensionFeature.NIGHT_MODE ->
-                enableExtensionFeature(NightImageCaptureExtender.create(builder))
-            else -> {
-            }
-        }
-    }
+//    private fun applyExtensions(builder: ImageCaptureConfig.Builder) {
+//        when (ExtensionFeature.fromPosition(extensionFeatures.selectedItemPosition)) {
+//            ExtensionFeature.BOKEH ->
+//                enableExtensionFeature(BokehImageCaptureExtender.create(builder))
+//            ExtensionFeature.HDR ->
+//                enableExtensionFeature(HdrImageCaptureExtender.create(builder))
+//            ExtensionFeature.NIGHT_MODE ->
+//                enableExtensionFeature(NightImageCaptureExtender.create(builder))
+//            else -> {
+//            }
+//        }
+//    }
 
-    private fun enableExtensionFeature(imageCaptureExtender: ImageCaptureExtender) {
-        if (imageCaptureExtender.isExtensionAvailable) {
-            imageCaptureExtender.enableExtension()
-        } else {
-            Toast.makeText(
-                this, getString(R.string.extension_unavailable),
-                Toast.LENGTH_SHORT
-            ).show()
-            extensionFeatures.setSelection(0)
-        }
-    }
+//    private fun enableExtensionFeature(imageCaptureExtender: ImageCaptureExtender) {
+//        if (imageCaptureExtender.isExtensionAvailable) {
+//            imageCaptureExtender.enableExtension()
+//        } else {
+//            Toast.makeText(
+//                this, getString(R.string.extension_unavailable),
+//                Toast.LENGTH_SHORT
+//            ).show()
+//            extensionFeatures.setSelection(0)
+//        }
+//    }
 
     private fun updateTransform() {
         val matrix = Matrix()

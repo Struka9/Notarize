@@ -1,9 +1,8 @@
-package com.notarize.app.ext
+package com.tallycheck.app.ext
 
 import java.math.BigInteger
 import java.security.MessageDigest
 
-// TODO: DRY MAN
 fun ByteArray.toSha256(): ByteArray {
     val md = MessageDigest.getInstance("sha256")
     return md.digest(this)

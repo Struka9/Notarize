@@ -11,11 +11,11 @@
     <string name="save_image">Save Image</string>
     <string name="taken_image">Taken Image</string>
     <string name="image_popup">Image</string>
-    <string name="k_WalletSharedPreferences">NotarizeSharedPreferences</string>
     <string name="k_WalletFileName">k_WalletFileName</string>
     <string name="k_UnauthorizedWalletFileName">k_UnauthorizedWalletFileName</string>
     <string name="signDocumentFunction">signDocument</string>
-    <string name="tallyLockSmartContractAddress">0xd57C76f13344D9D753639647199A07d85EA97Cbd</string>
     <string name="upload">Upload</string>
     <string name="send_file">Send File</string>
+
+    <string name="tallyLockSmartContractAddress">0xd57C76f13344D9D753639647199A07d85EA97Cbd</string>
 </resources>

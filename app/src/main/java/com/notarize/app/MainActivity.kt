@@ -25,38 +25,21 @@ class MainActivity : AppCompatActivity() {
 
         var fileHash = intent.getStringExtra(EXTRA_FILE_HASH);
 
-
-
-
         uploadButton.setOnClickListener{
-            Log.d("TEST", "FIRST LOG MESSAGE")
-
-
-
             val ipfsManager = IpfsManager(
                 getString(R.string.pinata_header_1),
                 getString(R.string.pinata_header_2))
 
-            var ethereumManager = EthereumManager()
-            var web3 = ethereumManager.connectToNetwork(getString(R.string.testnet_infura_endpoint))
+            val ethereumManager = EthereumManager()
+            val web3 = ethereumManager.connectToNetwork(getString(R.string.testnet_infura_endpoint))
             val password = getString(R.string.temp_password)
-            var notaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_WalletFileName), password)
+            val notaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_WalletFileName), password)
 
             var jwtToken = Jwts.builder()
                 .setIssuer(notaryCredentials?.address)
                 .setIssuedAt(Date())
                 .claim("fileHash", fileHash).compact()
 
-            Log.d("TEST", "JWT: " + jwtToken)
-
-            //var hashedContent = Hash.hmacSha512(content.encodeToByteArray(), notaryCredentials.)
-            //var adversaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_UnauthorizedWalletFileName), password)
-
-            /*
-            if (notaryCredentials != null) {
-                var signatureData = Sign.signMessage(content.toByteArray(Charsets.UTF_8), notaryCredentials?.ecKeyPair)
-                Log.d("TEXT", "Signature: " + signatureData.toString())
-            }*/
 
             var content = jwtToken
 
@@ -79,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                         Log.d("TEST", "IPFSHash: " + body.IpfsHash)
 
 
-                        var smartContract: TallyLock = TallyLock.load(getString(R.string.tallyLockSmartContractAddress),
+                        val smartContract: TallyLock = TallyLock.load(getString(R.string.tallyLockSmartContractAddress),
                             web3,
                             notaryCredentials,
                             DefaultGasProvider.GAS_PRICE,
@@ -107,36 +90,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
-
-
-
-
-
-
-
-
-
-            /*
-            //Send Funds
-            if (notaryCredentials != null && adversaryCredentials != null) {
-                try {
-                    var receipt = Transfer.sendFunds(
-                        web3,
-                        adversaryCredentials,
-                        getString(R.string.temp_destination_address),
-                        BigDecimal(10000000),
-                        Convert.Unit.GWEI).sendAsync().get()
-
-                    Log.d("TEXT", "Transaction receipt: " + receipt.transactionHash)
-                } catch (e : Exception) {
-                    e.printStackTrace()
-                }
-
-
-            } else {
-                Log.d("TEST", "Credentials are not valid :S")
-            }*/
-
 
         }
     }

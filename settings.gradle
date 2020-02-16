@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':tallycheck', ':tallycheckcontract'
 rootProject.name='notarize'

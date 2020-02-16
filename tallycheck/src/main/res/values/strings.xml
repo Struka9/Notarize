@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TallyCheck</string>
+    <string name="action_settings">Settings</string>
+    <string name="k_WalletFileName">k_WalletFileName</string>
+    <string name="couldnt_verify_with_contract">Couldn\'t verify with contract</string>
+    <string name="not_signed">This doc has not been signed</string>
+    <string name="doc_signed">This doc was signed</string>
+</resources>

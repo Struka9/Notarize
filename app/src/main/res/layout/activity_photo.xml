@@ -18,15 +18,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Spinner
-                android:id="@+id/extensionFeatures"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:entries="@array/extension_features"
-                android:prompt="@string/extension_feature_prompt"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/toggleCameraLens"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <Spinner-->
+            <!--                android:id="@+id/extensionFeatures"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="0dp"-->
+            <!--                android:entries="@array/extension_features"-->
+            <!--                android:prompt="@string/extension_feature_prompt"-->
+            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                app:layout_constraintRight_toLeftOf="@+id/toggleCameraLens"-->
+            <!--                app:layout_constraintTop_toTopOf="parent" />-->
 
             <ImageView
                 android:id="@+id/toggleCameraLens"
