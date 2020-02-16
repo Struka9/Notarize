@@ -1,6 +1,7 @@
 package com.notarize.app
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -8,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.media.Image
+import android.net.Uri
 import android.os.Bundle
 import android.view.Surface
 import android.view.View
@@ -46,6 +48,8 @@ class PhotoActivity : AppCompatActivity() {
         )
     }
 
+    private var imageUri: Uri? = null
+
     private val fileUtils: FileUtils by lazy { FileUtilsImpl() }
     private val executor: Executor by lazy { Executors.newSingleThreadExecutor() }
 
@@ -67,12 +71,37 @@ class PhotoActivity : AppCompatActivity() {
             bitmap.recycle()
 
             startActivityForResult(
-                Intent(this@PhotoActivity, MainActivity::class.java)
+                Intent(
+                    this@PhotoActivity,
+                    MainActivity::class.java
+                )
                     .apply {
                         putExtra(EXTRA_FILE_HASH, byteArray.toSha256().toHexString())
                     },
                 REQUEST_CODE_UPLOAD
             )
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_UPLOAD) {
+            if (resultCode == Activity.RESULT_OK) {
+                startActivity(
+                    Intent.createChooser(
+                        Intent(Intent.ACTION_SEND).apply {
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            putExtra(Intent.EXTRA_STREAM, imageUri)
+                            type = "image/*"
+                        },
+                        getString(R.string.send_file)
+                    )
+                )
+            } else {
+                takenImage.setImageBitmap(null)
+                bt_upload.visibility = View.GONE
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -114,7 +143,7 @@ class PhotoActivity : AppCompatActivity() {
 
     private fun takePicture() {
         disableActions()
-        savePictureToMemory()
+        savePictureToFile()
     }
 
     private fun savePictureToFile() {
@@ -125,13 +154,15 @@ class PhotoActivity : AppCompatActivity() {
             object : ImageCapture.OnImageSavedListener {
                 override fun onImageSaved(file: File) {
                     runOnUiThread {
-                        takenImage.setImageURI(
-                            FileProvider.getUriForFile(
-                                this@PhotoActivity,
-                                packageName,
-                                file
-                            )
+                        imageUri = FileProvider.getUriForFile(
+                            this@PhotoActivity,
+                            packageName,
+                            file
                         )
+                        takenImage.setImageURI(
+                            imageUri
+                        )
+                        bt_upload.visibility = View.VISIBLE
                         enableActions()
                     }
                 }
@@ -147,6 +178,7 @@ class PhotoActivity : AppCompatActivity() {
                             getString(R.string.image_capture_failed),
                             Toast.LENGTH_SHORT
                         ).show()
+                        bt_upload.visibility = View.GONE
                     }
                 }
             })
