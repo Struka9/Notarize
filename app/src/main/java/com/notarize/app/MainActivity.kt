@@ -1,6 +1,7 @@
 package com.notarize.app
 
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +28,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         var fileHash = intent.getStringExtra(EXTRA_FILE_HASH);
+        if (fileHash == null) {
+            fileHash = "This is a temporary text"
+        }
 
         Log.d("TEST", "File Hash: " + fileHash)
 
@@ -44,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             var web3 = ethereumManager.connectToNetwork(getString(R.string.testnet_infura_endpoint))
             val password = getString(R.string.temp_password)
             var notaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_WalletFileName), password)
-
+            //var adversaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_UnauthorizedWalletFileName), password)
 
             var jwtHeader = JSONObject()
             jwtHeader.put("typ", "JWT")
@@ -64,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             var jwtToken = encodedMessage
 
             //var hashedContent = Hash.hmacSha512(content.encodeToByteArray(), notaryCredentials.)
-            //var adversaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_UnauthorizedWalletFileName), password)
+
 
             /*
             if (notaryCredentials != null) {
@@ -108,6 +112,8 @@ class MainActivity : AppCompatActivity() {
                                 t: TransactionReceipt?, u: Throwable? ->
                             if (t != null ) {
                                 Log.d("TEXT", "Transaction receipt: " + t.transactionHash)
+                                setResult(Activity.RESULT_OK);
+                                finish()
                             } else {
 
                                 Log.d("TEXT", "Something happened: " + u?.message)
