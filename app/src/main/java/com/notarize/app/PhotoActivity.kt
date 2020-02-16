@@ -1,6 +1,7 @@
 package com.notarize.app
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -22,9 +23,13 @@ import androidx.camera.extensions.NightImageCaptureExtender
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toBitmap
 import com.notarize.app.ImagePopupView.Companion.ALPHA_TRANSPARENT
 import com.notarize.app.ImagePopupView.Companion.FADING_ANIMATION_DURATION
+import com.notarize.app.ext.toHexString
+import com.notarize.app.ext.toSha256
 import kotlinx.android.synthetic.main.activity_photo.*
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -32,6 +37,7 @@ import java.util.concurrent.Executors
 class PhotoActivity : AppCompatActivity() {
 
     companion object {
+        const val REQUEST_CODE_UPLOAD = 11
         private const val REQUEST_CODE_PERMISSIONS = 10
 
         private val REQUIRED_PERMISSIONS = arrayOf(
@@ -52,6 +58,22 @@ class PhotoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_photo)
         setClickListeners()
         requestPermissions()
+
+        bt_upload.setOnClickListener {
+            val bitmap = takenImage.drawable.toBitmap()
+            val bso = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 70, bso)
+            val byteArray = bso.toByteArray()
+            bitmap.recycle()
+
+            startActivityForResult(
+                Intent(this@PhotoActivity, MainActivity::class.java)
+                    .apply {
+                        putExtra(EXTRA_FILE_HASH, byteArray.toSha256().toHexString())
+                    },
+                REQUEST_CODE_UPLOAD
+            )
+        }
     }
 
     private fun setClickListeners() {
@@ -145,6 +167,8 @@ class PhotoActivity : AppCompatActivity() {
                         this@PhotoActivity, getString(R.string.image_save_failed),
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    bt_upload.visibility = View.GONE
                 }
 
                 override fun onCaptureSuccess(
@@ -158,6 +182,7 @@ class PhotoActivity : AppCompatActivity() {
                         )
                         runOnUiThread {
                             takenImage.setImageBitmap(bitmap)
+                            bt_upload.visibility = View.VISIBLE
                             enableActions()
                         }
                     }

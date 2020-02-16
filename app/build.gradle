@@ -57,7 +57,7 @@ dependencies {
     // Koin AndroidX ViewModel feature
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 
-    implementation 'org.web3j:core:4.2.0-android'
+//    implementation 'org.web3j:core:4.2.0-android'
 
     implementation('org.web3j:core:4.5.6')
 
