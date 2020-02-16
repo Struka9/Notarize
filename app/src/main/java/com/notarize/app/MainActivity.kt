@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
                         //If Uploaded correctly send to the SmartContract for logging
                         var receipt = smartContract.signDocument(
-                            body.IpfsHash,
+                            fileHash,
                             body.IpfsHash).sendAsync().whenCompleteAsync {
                                 t: TransactionReceipt?, u: Throwable? ->
                             if (t != null ) {
