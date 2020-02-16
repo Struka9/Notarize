@@ -17,4 +17,5 @@
     <string name="signDocumentFunction">signDocument</string>
     <string name="tallyLockSmartContractAddress">0xd57C76f13344D9D753639647199A07d85EA97Cbd</string>
     <string name="upload">Upload</string>
+    <string name="send_file">Send File</string>
 </resources>
