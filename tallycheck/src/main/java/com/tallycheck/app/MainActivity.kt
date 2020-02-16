@@ -71,7 +71,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkSigning() {
         //If Uploaded correctly send to the SmartContract for logging
-        val hash = img_check.drawable
+        val hash = img_check
+            .drawable
             .toBitmap()
             .toByteArray()
             .toSha256()

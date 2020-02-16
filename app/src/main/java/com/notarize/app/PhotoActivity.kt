@@ -12,6 +12,7 @@ import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,6 @@ import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.graphics.drawable.toBitmap
 import com.notarize.app.ImagePopupView.Companion.ALPHA_TRANSPARENT
 import com.notarize.app.ImagePopupView.Companion.FADING_ANIMATION_DURATION
 import com.notarize.app.ext.toHexString
@@ -59,7 +59,7 @@ class PhotoActivity : AppCompatActivity() {
         requestPermissions()
 
         bt_upload.setOnClickListener {
-            val bitmap = takenImage.drawable.toBitmap()
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
             val byteArray = bitmap.toByteArray()
             bitmap.recycle()
 
@@ -69,7 +69,11 @@ class PhotoActivity : AppCompatActivity() {
                     MainActivity::class.java
                 )
                     .apply {
-                        putExtra(EXTRA_FILE_HASH, byteArray.toSha256().toHexString())
+                        val hash = byteArray
+                            .toSha256()
+                            .toHexString()
+                        Log.d("PhotoActivity", "Second hash $hash")
+                        putExtra(EXTRA_FILE_HASH, hash)
                     },
                 REQUEST_CODE_UPLOAD
             )
@@ -90,6 +94,11 @@ class PhotoActivity : AppCompatActivity() {
                     )
                 )
             } else {
+                Toast.makeText(
+                    this,
+                    R.string.something_went_wrong,
+                    Toast.LENGTH_LONG
+                ).show()
                 takenImage.setImageBitmap(null)
                 bt_upload.visibility = View.GONE
             }
@@ -165,6 +174,7 @@ class PhotoActivity : AppCompatActivity() {
                     message: String,
                     cause: Throwable?
                 ) {
+                    Log.e("PhotoActivity", message, cause)
                     runOnUiThread {
                         Toast.makeText(
                             this@PhotoActivity,
@@ -206,6 +216,10 @@ class PhotoActivity : AppCompatActivity() {
                             rotationDegrees.toFloat()
                         )
                         runOnUiThread {
+                            Log.d(
+                                "Photo",
+                                "First hash ${bitmap.toByteArray().toSha256().toHexString()}"
+                            )
                             takenImage.setImageBitmap(bitmap)
 
                             val path = MediaStore.Images.Media.insertImage(

@@ -32,7 +32,7 @@ public class EthereumManager {
         if (walletFileName == null || walletFileName.equals("")) {
             //There is no wallet, create the wallet
             try {
-                String walletName = WalletUtils.generateNewWalletFile(password, walletDir);
+                String walletName = WalletUtils.generateLightNewWalletFile(password, walletDir);
                 Log.d("TEST", "Wallet name: " + walletName);
 
                 //Save the walletName
