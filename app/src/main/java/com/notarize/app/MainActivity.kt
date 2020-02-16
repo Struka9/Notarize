@@ -4,11 +4,14 @@ package com.notarize.app
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.io.Encoders
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import org.json.JSONObject
 import org.web3j.crypto.Credentials
+import org.web3j.crypto.Hash
+import org.web3j.crypto.Sign
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.tx.gas.DefaultGasProvider
 import retrofit2.Call
@@ -25,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         var fileHash = intent.getStringExtra(EXTRA_FILE_HASH);
 
-
+        Log.d("TEST", "File Hash: " + fileHash)
 
 
         uploadButton.setOnClickListener{
@@ -42,12 +45,23 @@ class MainActivity : AppCompatActivity() {
             val password = getString(R.string.temp_password)
             var notaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_WalletFileName), password)
 
-            var jwtToken = Jwts.builder()
-                .setIssuer(notaryCredentials?.address)
-                .setIssuedAt(Date())
-                .claim("fileHash", fileHash).compact()
 
-            Log.d("TEST", "JWT: " + jwtToken)
+            var jwtHeader = JSONObject()
+            jwtHeader.put("typ", "JWT")
+                .put("alg", "ES256")
+
+            var jwtPayload = JSONObject()
+            jwtPayload.put("iss", notaryCredentials?.address)
+                .put("fileHash", fileHash)
+                .put("isa", Date().time)
+
+            var encodedMessage = Encoders.BASE64URL.encode(jwtHeader.toString().toByteArray()) + "." + Encoders.BASE64URL.encode(jwtPayload.toString().toByteArray())
+            Log.d("TEST", "JWT before signature: " + encodedMessage)
+            var signatureData = Sign.signMessage(Hash.sha256(encodedMessage.toByteArray()), notaryCredentials?.ecKeyPair)
+            encodedMessage += "." + Encoders.BASE64URL.encode(signatureData.toString().toByteArray())
+            Log.d("TEST", "JWT signed: " + encodedMessage)
+
+            var jwtToken = encodedMessage
 
             //var hashedContent = Hash.hmacSha512(content.encodeToByteArray(), notaryCredentials.)
             //var adversaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_UnauthorizedWalletFileName), password)
