@@ -4,6 +4,7 @@ package com.notarize.app
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import io.jsonwebtoken.Jwts
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -13,6 +14,7 @@ import org.web3j.tx.gas.DefaultGasProvider
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,13 +23,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        var fileHash = intent.getStringExtra(EXTRA_FILE_HASH);
+
+
+
+
         uploadButton.setOnClickListener{
             Log.d("TEST", "FIRST LOG MESSAGE")
 
 
-            // Create a request body with file and image media type
-            val fileReqBody = RequestBody.create(MediaType.parse("text/plain"), "This is the file content")
-            val fileName = "file3.txt"
 
             val ipfsManager = IpfsManager(
                 getString(R.string.pinata_header_1),
@@ -38,7 +42,27 @@ class MainActivity : AppCompatActivity() {
             val password = getString(R.string.temp_password)
             var notaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_WalletFileName), password)
 
+            var jwtToken = Jwts.builder()
+                .setIssuer(notaryCredentials?.address)
+                .setIssuedAt(Date())
+                .claim("fileHash", fileHash).compact()
+
+            Log.d("TEST", "JWT: " + jwtToken)
+
+            //var hashedContent = Hash.hmacSha512(content.encodeToByteArray(), notaryCredentials.)
             //var adversaryCredentials : Credentials? = ethereumManager.loadCredentials(this, getString(R.string.k_UnauthorizedWalletFileName), password)
+
+            /*
+            if (notaryCredentials != null) {
+                var signatureData = Sign.signMessage(content.toByteArray(Charsets.UTF_8), notaryCredentials?.ecKeyPair)
+                Log.d("TEXT", "Signature: " + signatureData.toString())
+            }*/
+
+            var content = jwtToken
+
+            // Create a request body with file and image media type
+            val fileReqBody = RequestBody.create(MediaType.parse("application/jwt"), content)
+            val fileName = "filehash.jwt"
 
 
             //Upload file to IPFS
@@ -52,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                     if (response.code() == 200) {
                         Log.d("TEST", "Something worked")
                         val body = response.body()!!
-                        Log.d("TEST", body.IpfsHash)
+                        Log.d("TEST", "IPFSHash: " + body.IpfsHash)
 
 
                         var smartContract: TallyLock = TallyLock.load(getString(R.string.tallyLockSmartContractAddress),
@@ -62,9 +86,10 @@ class MainActivity : AppCompatActivity() {
                             DefaultGasProvider.GAS_LIMIT)
                         //var smartContract = TallyLock.load(getString(R.string.tallyLockSmartContractAddress), web3, notaryCredentials, DefaultGasProvider.GAS_PRICE, DefaultGasProvider.GAS_LIMIT)
 
+
                         //If Uploaded correctly send to the SmartContract for logging
                         var receipt = smartContract.signDocument(
-                            body.IpfsHash,
+                            fileHash,
                             body.IpfsHash).sendAsync().whenCompleteAsync {
                                 t: TransactionReceipt?, u: Throwable? ->
                             if (t != null ) {
