@@ -25,6 +25,8 @@ public class EthereumManager {
     public Web3j connectToNetwork(String network) {
         Web3j web3 = Web3j.build(new HttpService(network));
 
+        /*
+        //TODO: Is this necessary?
         try {
             Log.d("EthereumManager", "Trying to connect to " + network);
             Web3ClientVersion clientVersion = web3.web3ClientVersion().sendAsync().get();
@@ -39,7 +41,7 @@ public class EthereumManager {
         } catch (ExecutionException e) {
             e.printStackTrace();
             Log.d("EthereumManager", "Exception Connecting to " + network);
-        }
+        }*/
 
         return web3;
     }
