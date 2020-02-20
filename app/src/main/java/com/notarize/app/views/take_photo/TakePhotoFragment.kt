@@ -1,32 +1,30 @@
 package com.notarize.app.views.take_photo
 
 import android.Manifest
+import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Matrix
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
 import androidx.camera.core.*
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.notarize.app.R
-import com.notarize.app.ext.createFile
-import com.notarize.app.ext.createPhotosDirIfDoesntExist
+import com.notarize.app.ext.createLoadingDialog
 import kotlinx.android.synthetic.main.fragment_photo.*
-import java.io.File
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TakePhotoFragment : Fragment() {
 
-    private val executor: Executor by lazy { Executors.newSingleThreadExecutor() }
-
     private var imageCapture: ImageCapture? = null
-    private var lensFacing = CameraX.LensFacing.BACK
+
+    private val takePhotoViewModel: TakePhotoViewModel by viewModel()
+
+    lateinit var loadingDialog: Dialog
 
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -48,8 +46,18 @@ class TakePhotoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requestPermissions()
 
+        loadingDialog = view.context.createLoadingDialog()
+
+        takePhotoViewModel.showProgressBar.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                loadingDialog.show()
+            } else {
+                loadingDialog.hide()
+            }
+        })
+
         bt_take_photo.setOnClickListener {
-            savePictureToFile()
+            takePhotoViewModel.savePictureToFile(imageCapture)
         }
     }
 
@@ -76,44 +84,8 @@ class TakePhotoFragment : Fragment() {
         }
     }
 
-    private fun startCamera() {
-        CameraX.unbindAll()
-
-        val preview = createPreviewUseCase()
-
-        preview.setOnPreviewOutputUpdateListener {
-            val parent = textureView.parent as ViewGroup
-            parent.removeView(textureView)
-            parent.addView(textureView, 0)
-
-            textureView.surfaceTexture = it.surfaceTexture
-            updateTransform()
-        }
-
-        imageCapture = createCaptureUseCase()
-        CameraX.bindToLifecycle(this, preview, imageCapture)
-    }
-
-    private fun createPreviewUseCase(): Preview {
-        val previewConfig = PreviewConfig.Builder().apply {
-            setLensFacing(lensFacing)
-            setTargetRotation(textureView.display.rotation)
-
-        }.build()
-
-        return Preview(previewConfig)
-    }
-
-    private fun createCaptureUseCase(): ImageCapture {
-        val imageCaptureConfig = ImageCaptureConfig.Builder()
-            .apply {
-                setLensFacing(lensFacing)
-                setTargetRotation(textureView.display.rotation)
-                setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
-            }
-
-//        applyExtensions(imageCaptureConfig)
-        return ImageCapture(imageCaptureConfig.build())
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun updateTransform() {
@@ -134,42 +106,42 @@ class TakePhotoFragment : Fragment() {
         textureView.setTransform(matrix)
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+    private fun startCamera() {
+        CameraX.unbindAll()
+
+        val preview = createPreviewUseCase()
+
+        preview.setOnPreviewOutputUpdateListener {
+            val parent = textureView.parent as ViewGroup
+            parent.removeView(textureView)
+            parent.addView(textureView, 0)
+
+            textureView.surfaceTexture = it.surfaceTexture
+            updateTransform()
+        }
+
+        imageCapture = createCaptureUseCase()
+        CameraX.bindToLifecycle(this, preview, imageCapture)
     }
 
-    private fun getMetadata() = ImageCapture.Metadata().apply {
-        isReversedHorizontal = lensFacing == CameraX.LensFacing.FRONT
+    private fun createPreviewUseCase(): Preview {
+        val previewConfig = PreviewConfig.Builder().apply {
+            setTargetRotation(textureView.display.rotation)
+
+        }.build()
+
+        return Preview(previewConfig)
     }
 
-    private fun savePictureToFile() {
-        requireContext().createPhotosDirIfDoesntExist()
-        val file = requireContext().createFile()
+    private fun createCaptureUseCase(): ImageCapture {
+        val imageCaptureConfig = ImageCaptureConfig.Builder()
+            .apply {
+                setLensFacing(CameraX.LensFacing.BACK)
+                setTargetRotation(textureView.display.rotation)
+                setCaptureMode(ImageCapture.CaptureMode.MAX_QUALITY)
+            }
 
-        imageCapture?.takePicture(
-            file,
-            getMetadata(),
-            executor,
-            object : ImageCapture.OnImageSavedListener {
-                override fun onImageSaved(file: File) {
-                    val uri =
-                        FileProvider.getUriForFile(
-                            requireContext(),
-                            requireContext().packageName,
-                            file
-                        )
-
-                    Log.d("TakePhoto", "URI is ${uri.toString()}")
-                }
-
-                override fun onError(
-                    imageCaptureError: ImageCapture.ImageCaptureError,
-                    message: String,
-                    cause: Throwable?
-                ) {
-                    Log.e("TakePhoto", message, cause)
-                }
-
-            })
+//        applyExtensions(imageCaptureConfig)
+        return ImageCapture(imageCaptureConfig.build())
     }
 }

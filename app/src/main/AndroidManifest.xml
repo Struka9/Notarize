@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
-        android:name=".NotarizeApplication">
+        android:name=".TallyLockApplication">
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.notarize.app"
