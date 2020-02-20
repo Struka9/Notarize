@@ -3,6 +3,9 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="colorAccentTransparent">#88D81B60</color>
+    <color name="gray">#ACB5C4</color>
+    <color name="gray_transparent">#88ACB5C4</color>
     <color name="white">#FFFFFF</color>
     <color name="color_black">#000000</color>
     <color name="black_effective">#2a2a2a</color>
