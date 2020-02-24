@@ -13,16 +13,27 @@ import androidx.camera.core.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.notarize.app.R
 import com.notarize.app.ext.createLoadingDialog
 import kotlinx.android.synthetic.main.fragment_photo.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.ViewModelParameters
+import org.koin.androidx.viewmodel.getViewModel
 
 class TakePhotoFragment : Fragment() {
 
     private var imageCapture: ImageCapture? = null
 
-    private val takePhotoViewModel: TakePhotoViewModel by viewModel()
+    // WHY: We want to get a shared viewmodel to access the URI in both fragments
+    private val takePhotoViewModel: TakePhotoViewModel by lazy {
+        return@lazy getKoin().getViewModel(
+            ViewModelParameters(
+                TakePhotoViewModel::class,
+                owner = requireActivity()
+            )
+        )
+    }
 
     lateinit var loadingDialog: Dialog
 
@@ -44,11 +55,9 @@ class TakePhotoFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        requestPermissions()
-
         loadingDialog = view.context.createLoadingDialog()
 
-        takePhotoViewModel.showProgressBar.observe(viewLifecycleOwner, Observer {
+        takePhotoViewModel.isDoingBackgroundWork.observe(viewLifecycleOwner, Observer {
             if (it == true) {
                 loadingDialog.show()
             } else {
@@ -56,9 +65,19 @@ class TakePhotoFragment : Fragment() {
             }
         })
 
+        takePhotoViewModel
+            .photoFileUri
+            .observe(viewLifecycleOwner, Observer {
+                if (it != null) {
+                    findNavController().navigate(R.id.photoPreview)
+                }
+            })
+
         bt_take_photo.setOnClickListener {
             takePhotoViewModel.savePictureToFile(imageCapture)
         }
+
+        requestPermissions()
     }
 
     private fun requestPermissions() {

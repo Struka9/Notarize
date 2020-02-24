@@ -9,5 +9,19 @@
         android:id="@+id/takePhoto"
         android:name="com.notarize.app.views.take_photo.TakePhotoFragment"
         android:label="@string/take_photo"
-        tools:layout="@layout/fragment_photo" />
+        tools:layout="@layout/fragment_photo">
+        <action
+            android:id="@+id/actionPreview"
+            app:destination="@id/photoPreview"
+            app:popUpTo="@+id/takePhoto"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/photoPreview"
+        android:name="com.notarize.app.views.photo_preview.PhotoPreviewFragment"
+        android:label="@string/preview"
+        tools:layout="@layout/fragment_photo_preview">
+
+    </fragment>
 </navigation>
