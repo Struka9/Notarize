@@ -22,6 +22,7 @@ import org.koin.androidx.viewmodel.getViewModel
  */
 class PhotoPreviewFragment : Fragment() {
 
+    // We need to share the same TakePhotoViewModel
     private val takePhotoViewModel: TakePhotoViewModel by lazy {
         return@lazy getKoin().getViewModel(
             ViewModelParameters(
