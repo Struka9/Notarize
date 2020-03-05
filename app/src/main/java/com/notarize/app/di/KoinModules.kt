@@ -4,7 +4,11 @@ import com.notarize.app.EthereumManager
 import com.notarize.app.IpfsManager
 import com.notarize.app.R
 import com.notarize.app.TallyLock
+import com.notarize.app.db.IWorkSubmissionRepo
+import com.notarize.app.db.TallyLockDatabase
+import com.notarize.app.db.WorkSubmissionRepo
 import com.notarize.app.views.take_photo.TakePhotoViewModel
+import com.notarize.app.views.workqueue.WorkQueueViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.StringQualifier
@@ -73,10 +77,30 @@ val appModule = module {
             DefaultGasProvider.GAS_LIMIT
         )
     }
+
+    // DB Dependencies
+    single {
+        val context = androidContext()
+        val db = TallyLockDatabase.getDatabase(context)
+        db
+    }
+
+    single {
+        get<TallyLockDatabase>().workSubmissionsDao()
+    }
+
+    single<IWorkSubmissionRepo> {
+        WorkSubmissionRepo(get())
+    }
+
     viewModel {
         TakePhotoViewModel(
-            get(),
-            get(),
+            get()
+        )
+    }
+
+    viewModel {
+        WorkQueueViewModel(
             get(),
             get()
         )

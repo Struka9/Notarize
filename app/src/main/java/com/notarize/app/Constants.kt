@@ -6,3 +6,5 @@ const val EXTRA_FILE_URI = "extra-file-uri"
 const val EXTRA_IPFS_HASH = "extra-ipfs-hash"
 
 const val EXTRA_TX_HASH = "extra-tx-hash"
+
+const val TAG_SUBMIT_DOC = "work-submit-doc"

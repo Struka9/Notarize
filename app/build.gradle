@@ -6,7 +6,14 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
+apply plugin: 'kotlin-kapt'
+
 android {
+    // exclude the atomic functions module from the package and prevent warnings.
+    packagingOptions {
+        exclude 'META-INF/atomicfu.kotlin_module'
+    }
+
     // So we don't get errors from the alpha release of the CameraX API
     lintOptions {
         disable 'RestrictedApi'
@@ -44,6 +51,12 @@ dependencies {
     def nav_version = "2.3.0-alpha02"
     def koin_version = "2.0.1"
     def camerax_version = "1.0.0-alpha03"
+
+    // Room components
+    implementation "androidx.room:room-runtime:$rootProject.roomVersion"
+    implementation "androidx.room:room-ktx:$rootProject.roomVersion"
+    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
+    androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

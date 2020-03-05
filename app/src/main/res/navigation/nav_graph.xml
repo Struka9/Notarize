@@ -22,6 +22,13 @@
         android:name="com.notarize.app.views.photo_preview.PhotoPreviewFragment"
         android:label="@string/preview"
         tools:layout="@layout/fragment_photo_preview">
+    </fragment>
+
+    <fragment
+        android:id="@+id/workQueue"
+        android:name="com.notarize.app.views.workqueue.WorkQueueFragment"
+        android:label="@string/work_queue"
+        tools:layout="@layout/fragment_work_queue">
 
     </fragment>
 </navigation>

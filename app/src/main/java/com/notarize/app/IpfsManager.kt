@@ -6,10 +6,10 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class IpfsManager(private val header1: String, private val header2: String) {
-
-
+class IpfsManager(private val header1: String,
+                  private val header2: String) {
     suspend fun uploadFile(fileName: String, requestBody: RequestBody): Response<IpfsObject> {
+        // TODO: Remove retrofit declaration
         val retrofit = Retrofit.Builder().baseUrl("https://api.pinata.cloud/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()

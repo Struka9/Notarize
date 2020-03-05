@@ -1,34 +1,24 @@
 package com.notarize.app.views.take_photo
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.camera.core.ImageCapture
 import androidx.core.content.FileProvider
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.notarize.app.EXTRA_FILE_URI
-import com.notarize.app.IpfsManager
-import com.notarize.app.TallyLock
+import com.notarize.app.TAG_SUBMIT_DOC
 import com.notarize.app.ext.createFile
 import com.notarize.app.ext.createPhotosDirIfDoesntExist
 import com.notarize.app.worker.ContractWorker
 import com.notarize.app.worker.IpfsWorker
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import org.web3j.crypto.Credentials
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class TakePhotoViewModel(
-    private val context: Context,
-    private val ipfsManager: IpfsManager,
-    private val notaryCredentials: Credentials,
-    private val smartConract: TallyLock
+    private val context: Context
 ) : ViewModel() {
 
     private val executor: Executor by lazy { Executors.newSingleThreadExecutor() }
@@ -69,7 +59,6 @@ class TakePhotoViewModel(
             })
     }
 
-    @SuppressLint("deprecated")
     fun submitDocument() {
         if (photoFileUri.value == null) return
 
@@ -83,25 +72,15 @@ class TakePhotoViewModel(
             .setInputData(workDataOf(EXTRA_FILE_URI to photoFileUri.value?.toString()))
             .build()
 
-        val submitWorkRequest = OneTimeWorkRequestBuilder<ContractWorker>()
-            .build()
+        val submitWorkRequest =
+            OneTimeWorkRequestBuilder<ContractWorker>()
+                .addTag(TAG_SUBMIT_DOC)
+                .build()
 
         WorkManager.getInstance(context)
             .beginWith(ipfsWorkRequest)
             .then(submitWorkRequest)
             .enqueue()
 
-    }
-
-    private fun launchSuspendBlock(block: suspend () -> Unit): Job {
-        return viewModelScope.launch(Dispatchers.IO) {
-            try {
-                block()
-            } catch (e: Exception) {
-
-            } finally {
-                isDoingBackgroundWork.postValue(false)
-            }
-        }
     }
 }

@@ -8,6 +8,8 @@ import com.notarize.app.EXTRA_FILE_URI
 import com.notarize.app.EXTRA_IPFS_HASH
 import com.notarize.app.EXTRA_TX_HASH
 import com.notarize.app.TallyLock
+import com.notarize.app.db.IWorkSubmissionRepo
+import com.notarize.app.db.entities.WorkStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -21,6 +23,7 @@ class ContractWorker(context: Context, parameters: WorkerParameters) :
     CoroutineWorker(context, parameters),
     KoinComponent {
 
+    private val workSubmissionRepo: IWorkSubmissionRepo by inject()
     private val notaryCredentials: Credentials by inject()
     private val smartConract: TallyLock by inject()
 
@@ -41,10 +44,11 @@ class ContractWorker(context: Context, parameters: WorkerParameters) :
                     fileHash,
                     ipfsHash
                 ).send()
-
             Result.success(workDataOf(EXTRA_TX_HASH to receipt.transactionHash))
         } catch (e: Exception) {
             Timber.e(e)
+            workSubmissionRepo
+                .updateWorkStatus(fileHash, WorkStatus.FAILED)
             Result.failure()
         }
     }

@@ -27,4 +27,7 @@
     <string name="retake">Retake</string>
     <string name="sign">Sign</string>
     <string name="preview">Preview</string>
+    <string name="work_queue">Work Queue</string>
+    <string name="document_history">Document History</string>
+    <string name="wallet">Wallet</string>
 </resources>

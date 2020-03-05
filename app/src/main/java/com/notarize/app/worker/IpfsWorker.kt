@@ -9,6 +9,9 @@ import androidx.work.workDataOf
 import com.notarize.app.EXTRA_FILE_URI
 import com.notarize.app.EXTRA_IPFS_HASH
 import com.notarize.app.IpfsManager
+import com.notarize.app.db.IWorkSubmissionRepo
+import com.notarize.app.db.entities.WorkStatus
+import com.notarize.app.db.entities.WorkSubmission
 import com.notarize.app.ext.toHexString
 import com.notarize.app.ext.toSha256
 import com.notarize.app.toByteArray
@@ -29,6 +32,7 @@ import java.util.*
 class IpfsWorker(private val context: Context, workerParameters: WorkerParameters) :
     CoroutineWorker(context, workerParameters), KoinComponent {
 
+    private val workSubmissionRepo: IWorkSubmissionRepo by inject()
     private val ipfsManager: IpfsManager by inject()
     private val notaryCredentials: Credentials by inject()
 
@@ -36,14 +40,30 @@ class IpfsWorker(private val context: Context, workerParameters: WorkerParameter
         get() = Dispatchers.IO
 
     override suspend fun doWork(): Result = coroutineScope {
-        val fileUri = inputData.getString(EXTRA_FILE_URI)
-        if (fileUri.isNullOrBlank()) return@coroutineScope Result.failure()
+        val filePath = inputData.getString(EXTRA_FILE_URI)
+        if (filePath.isNullOrBlank()) {
+            return@coroutineScope Result.failure()
+        }
+
+        val fileUri = Uri.parse(filePath)
 
         val fileHash: String =
-            MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(fileUri))
+            MediaStore.Images.Media.getBitmap(context.contentResolver, fileUri)
                 .toByteArray()
                 .toSha256()
                 .toHexString()
+
+        // Set the entry in the db
+        workSubmissionRepo.insert(
+            WorkSubmission(
+                fileHash,
+                WorkStatus.PENDING,
+                Calendar.getInstance(),
+                fileUri
+            )
+        )
+
+        setProgress(workDataOf(EXTRA_IPFS_HASH to fileHash))
 
         val jwtHeader = JSONObject()
         jwtHeader.put("typ", "JWT")
@@ -75,8 +95,14 @@ class IpfsWorker(private val context: Context, workerParameters: WorkerParameter
         return@coroutineScope if (response.code() == 200) {
             val hash = response.body()!!.IpfsHash
 
-            Result.success(workDataOf(EXTRA_IPFS_HASH to hash, EXTRA_FILE_URI to fileUri))
+            Result.success(
+                workDataOf(
+                    EXTRA_IPFS_HASH to hash,
+                    EXTRA_FILE_URI to filePath
+                )
+            )
         } else {
+            workSubmissionRepo.updateWorkStatus(fileHash, WorkStatus.FAILED)
             Result.failure()
         }
     }

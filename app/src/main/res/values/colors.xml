@@ -5,6 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorAccentTransparent">#88D81B60</color>
     <color name="gray">#ACB5C4</color>
+    <color name="gray_dark">#6E6E6F</color>
     <color name="gray_transparent">#88ACB5C4</color>
     <color name="white">#FFFFFF</color>
     <color name="color_black">#000000</color>

@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.fragment_photo.*
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ViewModelParameters
 import org.koin.androidx.viewmodel.getViewModel
+import timber.log.Timber
 
 class TakePhotoFragment : Fragment() {
 
@@ -80,6 +81,11 @@ class TakePhotoFragment : Fragment() {
         requestPermissions()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        CameraX.unbindAll()
+    }
+
     private fun requestPermissions() {
         if (allPermissionsGranted()) {
             textureView.post { startCamera() }
@@ -128,6 +134,8 @@ class TakePhotoFragment : Fragment() {
     private fun startCamera() {
         CameraX.unbindAll()
 
+        Timber.d("Calling the start camera fun")
+        if (view == null) return
         val preview = createPreviewUseCase()
 
         preview.setOnPreviewOutputUpdateListener {
@@ -146,7 +154,6 @@ class TakePhotoFragment : Fragment() {
     private fun createPreviewUseCase(): Preview {
         val previewConfig = PreviewConfig.Builder().apply {
             setTargetRotation(textureView.display.rotation)
-
         }.build()
 
         return Preview(previewConfig)

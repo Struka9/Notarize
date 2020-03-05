@@ -1,16 +1,11 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -25,5 +20,14 @@
         <item name="android:paddingRight">@dimen/dp_16</item>
         <item name="android:paddingTop">@dimen/dp_8</item>
         <item name="android:paddingBottom">@dimen/dp_8</item>
+    </style>
+
+    <style name="TextTitle" parent="@style/TextAppearance.AppCompat.Headline">
+        <item name="android:textSize">@dimen/sp_24</item>
+    </style>
+
+    <style name="TextSubtitle" parent="@style/TextAppearance.AppCompat.Subhead">
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="android:textColor">@color/gray_dark</item>
     </style>
 </resources>
