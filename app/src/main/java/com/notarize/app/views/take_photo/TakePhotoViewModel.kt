@@ -24,7 +24,6 @@ class TakePhotoViewModel(
     private val executor: Executor by lazy { Executors.newSingleThreadExecutor() }
     val photoFileUri = MutableLiveData<Uri>()
 
-
     val isDoingBackgroundWork = MutableLiveData<Boolean>().apply {
         value = false
     }
@@ -62,6 +61,8 @@ class TakePhotoViewModel(
     fun submitDocument() {
         if (photoFileUri.value == null) return
 
+        isDoingBackgroundWork.value = true
+
         val constraints = Constraints
             .Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -82,5 +83,7 @@ class TakePhotoViewModel(
             .then(submitWorkRequest)
             .enqueue()
 
+        isDoingBackgroundWork.value = false
+        photoFileUri.value = null
     }
 }

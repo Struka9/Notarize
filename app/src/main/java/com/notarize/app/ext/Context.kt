@@ -3,6 +3,7 @@ package com.notarize.app.ext
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.notarize.app.R
 import java.io.File
@@ -31,3 +32,12 @@ fun Context.createFile() =
         "$cacheDir${File.separator}photos",
         "$PHOTO_PREFIX${System.currentTimeMillis()}$PHOTO_SUFFIX"
     )
+
+fun View.hide() {
+    visibility = View.GONE
+}
+
+fun View.show() {
+    visibility = View.VISIBLE
+}
+
