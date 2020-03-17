@@ -17,7 +17,7 @@
     <string name="upload">Upload</string>
     <string name="send_file">Send File</string>
 
-    <string name="tallyLockSmartContractAddress">0xd57C76f13344D9D753639647199A07d85EA97Cbd</string>
+    <string name="tallyLockSmartContractAddress">0x4bd5d18617A821Da470B0012F97952C6a713De3b</string>
     <string name="sign_document">Sign Document</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="take_photo">Take Photo</string>

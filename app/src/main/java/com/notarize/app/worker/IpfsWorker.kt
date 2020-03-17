@@ -19,7 +19,7 @@ import io.jsonwebtoken.io.Encoders
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import org.json.JSONObject
 import org.koin.core.KoinComponent
@@ -87,18 +87,18 @@ class IpfsWorker(private val context: Context, workerParameters: WorkerParameter
         val jwtToken = encodedMessage
 
         // Create a request body with file and image media type
-        val fileReqBody = RequestBody.create(MediaType.parse("application/jwt"), jwtToken)
+        val fileReqBody = RequestBody.create("application/jwt".toMediaTypeOrNull(), jwtToken)
         val fileName = "filehash.jwt"
 
         val response = ipfsManager.uploadFile(fileName, fileReqBody)
 
         return@coroutineScope if (response.code() == 200) {
-            val hash = response.body()!!.IpfsHash
+            val jwtHash = response.body()!!.IpfsHash
 
             Result.success(
                 workDataOf(
-                    EXTRA_IPFS_HASH to hash,
-                    EXTRA_FILE_URI to filePath
+                    EXTRA_IPFS_HASH to jwtHash,
+                    EXTRA_FILE_URI to fileHash
                 )
             )
         } else {

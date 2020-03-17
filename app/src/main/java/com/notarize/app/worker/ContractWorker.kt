@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.web3j.crypto.Credentials
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import timber.log.Timber
 
@@ -24,7 +23,6 @@ class ContractWorker(context: Context, parameters: WorkerParameters) :
     KoinComponent {
 
     private val workSubmissionRepo: IWorkSubmissionRepo by inject()
-    private val notaryCredentials: Credentials by inject()
     private val smartConract: TallyLock by inject()
 
     override val coroutineContext: CoroutineDispatcher

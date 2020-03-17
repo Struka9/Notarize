@@ -9,14 +9,20 @@ import com.tallycheck.tallycheckcontract.R;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.http.HttpService;
+import org.web3j.protocol.websocket.WebSocketService;
 
 import java.io.File;
+import java.io.IOException;
 
 public class EthereumManager {
 
-    public Web3j connectToNetwork(String network) {
-        return Web3j.build(new HttpService(network));
+    public Web3j connectToNetwork(String network) throws IOException {
+        WebSocketService ws = new WebSocketService(network,
+                true);
+        ws.connect();
+
+        return Web3j
+                .build(ws);
     }
 
     public Credentials loadCredentials(Context context, String sharedPreferencesKey, String password) {
@@ -33,7 +39,6 @@ public class EthereumManager {
             //There is no wallet, create the wallet
             try {
                 String walletName = WalletUtils.generateLightNewWalletFile(password, walletDir);
-                Log.d("TEST", "Wallet name: " + walletName);
 
                 //Save the walletName
                 SharedPreferences.Editor editor = sharedPreferences.edit();
