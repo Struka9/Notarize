@@ -5,6 +5,7 @@ import com.notarize.app.di.appModule
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import timber.log.Timber
 import java.security.Security
 
 class TallyLockApplication : Application() {
@@ -14,6 +15,7 @@ class TallyLockApplication : Application() {
         super.onCreate()
         setupBouncyCastle()
 
+        Timber.plant(Timber.DebugTree())
         startKoin {
             androidContext(this@TallyLockApplication)
             modules(listOf(appModule))
