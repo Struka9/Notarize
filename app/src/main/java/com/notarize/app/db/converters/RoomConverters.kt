@@ -9,7 +9,7 @@ import java.util.*
 
 class RoomConverters {
     @TypeConverter
-    fun fromUri(uri: Uri) = uri.path.toString()
+    fun fromUri(uri: Uri) = uri.toString()
 
     @TypeConverter
     fun toUri(uri: String) = try {
