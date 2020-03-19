@@ -17,6 +17,7 @@ data class WorkSubmission(
 enum class WorkStatus {
     FAILED,
     PENDING,
-    SUCCESS
+    SUCCESS,
+    SHARED
 }
 

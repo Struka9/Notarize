@@ -11,7 +11,10 @@ import com.notarize.app.ext.format
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_work_submission.view.*
 
-class WorkQueueAdapter(private val layoutInflater: LayoutInflater) :
+class WorkQueueAdapter(
+    private val layoutInflater: LayoutInflater,
+    private val onItemClickListener: (WorkSubmission) -> Unit
+) :
     RecyclerView.Adapter<WorkQueueAdapter.WorkQueueItemViewHolder>() {
 
     private val _queue = mutableListOf<WorkSubmission>()
@@ -37,8 +40,18 @@ class WorkQueueAdapter(private val layoutInflater: LayoutInflater) :
                     WorkStatus.PENDING -> R.drawable.ic_cloud_waiting
                     WorkStatus.FAILED -> R.drawable.ic_cloud_error
                     WorkStatus.SUCCESS -> R.drawable.ic_success
+                    WorkStatus.SHARED -> R.drawable.ic_success
                 }
             )
+
+            containerView
+                .img_status
+                .setColorFilter(
+                    when (queueItem.status) {
+                        WorkStatus.SHARED -> containerView.context.getColor(R.color.green_effective)
+                        else -> containerView.context.getColor(R.color.black_effective)
+                    }
+                )
         }
     }
 
@@ -56,5 +69,8 @@ class WorkQueueAdapter(private val layoutInflater: LayoutInflater) :
 
     override fun onBindViewHolder(holder: WorkQueueItemViewHolder, position: Int) {
         holder.bind(_queue[position])
+        holder.containerView.setOnClickListener {
+            onItemClickListener(_queue[position])
+        }
     }
 }

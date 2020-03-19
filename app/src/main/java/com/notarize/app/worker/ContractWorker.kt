@@ -46,7 +46,10 @@ class ContractWorker(context: Context, parameters: WorkerParameters) :
         } catch (e: Exception) {
             Timber.e(e)
             workSubmissionRepo
-                .updateWorkStatus(fileHash, WorkStatus.FAILED)
+                .updateWorkStatus(
+                    fileHash,
+                    WorkStatus.FAILED
+                )
             Result.failure()
         }
     }

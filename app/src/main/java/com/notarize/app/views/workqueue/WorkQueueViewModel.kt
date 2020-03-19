@@ -9,8 +9,6 @@ class WorkQueueViewModel(
     private val context: Context,
     private val workSubmissionRepo: IWorkSubmissionRepo
 ) : ViewModel() {
-
     val queueLiveData = workSubmissionRepo.getWorkSubmissions(null)
 
-    val signedDocs = workSubmissionRepo.getWorkSubmissions(WorkStatus.SUCCESS)
 }
