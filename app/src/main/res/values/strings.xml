@@ -31,4 +31,5 @@
     <string name="document_history">Document History</string>
     <string name="wallet">Wallet</string>
     <string name="msg_share_only_signed">You can only share successfuly signed docs</string>
+    <string name="symbol_eth">ETH</string>
 </resources>

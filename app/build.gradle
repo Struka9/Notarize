@@ -52,6 +52,11 @@ dependencies {
     def koin_version = "2.0.1"
     def camerax_version = "1.0.0-alpha03"
 
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha01"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha01"
+
     // Room components
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"

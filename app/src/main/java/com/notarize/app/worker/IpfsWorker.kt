@@ -9,9 +9,10 @@ import androidx.work.workDataOf
 import com.notarize.app.EXTRA_FILE_URI
 import com.notarize.app.EXTRA_IPFS_HASH
 import com.notarize.app.IpfsManager
-import com.notarize.app.db.IWorkSubmissionRepo
 import com.notarize.app.db.entities.WorkStatus
 import com.notarize.app.db.entities.WorkSubmission
+import com.notarize.app.di.repos.ICredentialsRepo
+import com.notarize.app.di.repos.IWorkSubmissionRepo
 import com.notarize.app.ext.toHexString
 import com.notarize.app.ext.toSha256
 import com.notarize.app.toByteArray
@@ -24,7 +25,6 @@ import okhttp3.RequestBody
 import org.json.JSONObject
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.web3j.crypto.Credentials
 import org.web3j.crypto.Hash
 import org.web3j.crypto.Sign
 import java.util.*
@@ -34,14 +34,16 @@ class IpfsWorker(private val context: Context, workerParameters: WorkerParameter
 
     private val workSubmissionRepo: IWorkSubmissionRepo by inject()
     private val ipfsManager: IpfsManager by inject()
-    private val notaryCredentials: Credentials by inject()
+    private val credentialsRepo: ICredentialsRepo by inject()
 
     override val coroutineContext: CoroutineDispatcher
         get() = Dispatchers.IO
 
     override suspend fun doWork(): Result = coroutineScope {
         val filePath = inputData.getString(EXTRA_FILE_URI)
-        if (filePath.isNullOrBlank()) {
+        val credentials = credentialsRepo.credentials.value
+
+        if (filePath.isNullOrBlank() || credentials == null) {
             return@coroutineScope Result.failure()
         }
 
@@ -70,7 +72,7 @@ class IpfsWorker(private val context: Context, workerParameters: WorkerParameter
             .put("alg", "ES256")
 
         val jwtPayload = JSONObject()
-        jwtPayload.put("iss", notaryCredentials.address)
+        jwtPayload.put("iss", credentials.address)
             .put("fileHash", fileHash)
             .put("isa", Date().time)
 
@@ -80,7 +82,7 @@ class IpfsWorker(private val context: Context, workerParameters: WorkerParameter
             )
         val signatureData = Sign.signMessage(
             Hash.sha256(encodedMessage.toByteArray()),
-            notaryCredentials.ecKeyPair
+            credentials.ecKeyPair
         )
         encodedMessage += "." + Encoders.BASE64URL.encode(signatureData.toString().toByteArray())
 

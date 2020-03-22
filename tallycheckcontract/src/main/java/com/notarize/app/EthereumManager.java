@@ -34,7 +34,6 @@ public class EthereumManager {
 
         Credentials credentials = null;
 
-
         if (walletFileName == null || walletFileName.equals("")) {
             //There is no wallet, create the wallet
             try {

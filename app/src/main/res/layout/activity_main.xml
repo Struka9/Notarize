@@ -19,6 +19,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="left"
             android:fitsSystemWindows="true"
+            app:headerLayout="@layout/sidebar_header"
             app:menu="@menu/drawer_menu" />
     </androidx.drawerlayout.widget.DrawerLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

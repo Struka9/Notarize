@@ -1,11 +1,12 @@
-package com.notarize.app.db
+package com.notarize.app.di.repos
 
 import androidx.lifecycle.LiveData
 import com.notarize.app.db.dao.WorkSubmissionDAO
 import com.notarize.app.db.entities.WorkStatus
 import com.notarize.app.db.entities.WorkSubmission
 
-class WorkSubmissionRepo(private val workSubmissionDAO: WorkSubmissionDAO) : IWorkSubmissionRepo {
+class WorkSubmissionRepo(private val workSubmissionDAO: WorkSubmissionDAO) :
+    IWorkSubmissionRepo {
     override suspend fun insert(workSubmission: WorkSubmission) {
         workSubmissionDAO.insertWorkSubmission(workSubmission)
     }

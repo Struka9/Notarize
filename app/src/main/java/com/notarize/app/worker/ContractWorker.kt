@@ -7,9 +7,9 @@ import androidx.work.workDataOf
 import com.notarize.app.EXTRA_FILE_URI
 import com.notarize.app.EXTRA_IPFS_HASH
 import com.notarize.app.EXTRA_TX_HASH
-import com.notarize.app.TallyLock
-import com.notarize.app.db.IWorkSubmissionRepo
 import com.notarize.app.db.entities.WorkStatus
+import com.notarize.app.di.repos.IContractRepo
+import com.notarize.app.di.repos.IWorkSubmissionRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -23,7 +23,7 @@ class ContractWorker(context: Context, parameters: WorkerParameters) :
     KoinComponent {
 
     private val workSubmissionRepo: IWorkSubmissionRepo by inject()
-    private val smartConract: TallyLock by inject()
+    private val contractRepo: IContractRepo by inject()
 
     override val coroutineContext: CoroutineDispatcher
         get() = Dispatchers.IO
@@ -37,12 +37,23 @@ class ContractWorker(context: Context, parameters: WorkerParameters) :
 
         return@coroutineScope try {
             //If Uploaded correctly send to the SmartContract for logging
-            val receipt: TransactionReceipt = smartConract
-                .signDocument(
+            val tallyLockContract = contractRepo.tallyLockContract
+
+            if (tallyLockContract != null) {
+                val receipt: TransactionReceipt = tallyLockContract.signDocument(
                     fileHash,
                     ipfsHash
                 ).send()
-            Result.success(workDataOf(EXTRA_TX_HASH to receipt.transactionHash))
+                Result.success(workDataOf(EXTRA_TX_HASH to receipt.transactionHash))
+            } else {
+                Timber.e("Repo didn't have a contract when submitting tx")
+                workSubmissionRepo
+                    .updateWorkStatus(
+                        fileHash,
+                        WorkStatus.FAILED
+                    )
+                Result.failure()
+            }
         } catch (e: Exception) {
             Timber.e(e)
             workSubmissionRepo

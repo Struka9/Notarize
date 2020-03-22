@@ -1,20 +1,19 @@
 package com.notarize.app.di
 
+import android.content.Context
 import com.notarize.app.EthereumManager
 import com.notarize.app.IpfsManager
 import com.notarize.app.R
-import com.notarize.app.TallyLock
-import com.notarize.app.db.IWorkSubmissionRepo
 import com.notarize.app.db.TallyLockDatabase
-import com.notarize.app.db.WorkSubmissionRepo
+import com.notarize.app.di.repos.*
+import com.notarize.app.views.main_activity.MainActivityViewModel
 import com.notarize.app.views.take_photo.TakePhotoViewModel
 import com.notarize.app.views.workqueue.WorkQueueViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.module
-import org.web3j.crypto.Credentials
-import org.web3j.protocol.Web3j
+import org.web3j.tx.gas.ContractGasProvider
 import org.web3j.tx.gas.DefaultGasProvider
 
 val appModule = module {
@@ -58,23 +57,33 @@ val appModule = module {
         ethereumManager.connectToNetwork(get<String>(qualifier = StringQualifier("network-gateway")))
     }
 
-    single {
-        val ethereumManager: EthereumManager = get()
-        val context = androidContext()
-        ethereumManager.loadCredentials(
-            context,
-            get(qualifier = StringQualifier("wallet-pref-key")),
-            get<String>(qualifier = StringQualifier("wallet-password"))
-        )
+    single<ContractGasProvider> {
+        DefaultGasProvider()
     }
 
     single {
-        TallyLock.load(
-            get<String>(qualifier = StringQualifier("smart-contract-address")),
-            get<Web3j>(),
-            get<Credentials>(),
-            DefaultGasProvider.GAS_PRICE,
-            DefaultGasProvider.GAS_LIMIT
+        val context = get<Context>()
+        context.getSharedPreferences(
+            context.getString(com.tallycheck.tallycheckcontract.R.string.k_WalletSharedPreferences),
+            Context.MODE_PRIVATE
+        )
+    }
+
+    single<ICredentialsRepo> {
+        CredentialsRepoImpl(
+            get(),
+            get(),
+            get(StringQualifier("wallet-pref-key")),
+            get(StringQualifier("wallet-password"))
+        )
+    }
+
+    single<IContractRepo> {
+        ContractRepoImpl(
+            get(),
+            get(qualifier = StringQualifier("smart-contract-address")),
+            get(),
+            get()
         )
     }
 
@@ -101,6 +110,13 @@ val appModule = module {
 
     viewModel {
         WorkQueueViewModel(
+            get(),
+            get()
+        )
+    }
+
+    viewModel {
+        MainActivityViewModel(
             get(),
             get()
         )

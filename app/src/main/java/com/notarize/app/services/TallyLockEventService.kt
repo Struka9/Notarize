@@ -1,11 +1,12 @@
 package com.notarize.app.services
 
-import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import com.notarize.app.TallyLock
-import com.notarize.app.db.IWorkSubmissionRepo
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.Observer
 import com.notarize.app.db.entities.WorkStatus
+import com.notarize.app.di.repos.IContractRepo
+import com.notarize.app.di.repos.IWorkSubmissionRepo
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
@@ -13,28 +14,25 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.web3j.crypto.Credentials
-import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-class TallyLockEventService : Service() {
+class TallyLockEventService : LifecycleService() {
 
     private lateinit var disposable: Disposable
     private val job = Job()
     private val coroutineContext: CoroutineContext = Dispatchers.IO + job
 
     // TODO: Listen for changes in wallet address
-    private val credentials: Credentials by inject()
-    private val tallyLockContract: TallyLock by inject()
-    private val web3: Web3j by inject()
+    private val contractRepo: IContractRepo by inject()
     private val workSubmissionRepo: IWorkSubmissionRepo by inject()
 
     override fun onCreate() {
         super.onCreate()
-        val address = tallyLockContract.contractAddress
-        disposable = tallyLockContract
+        contractRepo.tallyLockContractLiveData
+            .observe(this, Observer { tallyLockContract ->
+                disposable = tallyLockContract
             .logDocumentSignedEventFlowable(
                 DefaultBlockParameterName.LATEST,
                 DefaultBlockParameterName.PENDING
@@ -53,9 +51,11 @@ class TallyLockEventService : Service() {
                 // On error
                 Timber.e(it)
             }
+            })
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         return START_STICKY
     }
 
@@ -66,6 +66,7 @@ class TallyLockEventService : Service() {
     }
 
     override fun onBind(intent: Intent): IBinder? {
+        super.onBind(intent)
         return null
     }
 }

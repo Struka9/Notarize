@@ -1,4 +1,4 @@
-package com.notarize.app.db
+package com.notarize.app.di.repos
 
 import androidx.lifecycle.LiveData
 import com.notarize.app.db.entities.WorkStatus

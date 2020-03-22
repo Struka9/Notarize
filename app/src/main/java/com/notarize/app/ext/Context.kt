@@ -3,10 +3,12 @@ package com.notarize.app.ext
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.icu.text.NumberFormat
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.notarize.app.R
 import java.io.File
+import java.math.BigDecimal
 
 const val PHOTO_PREFIX = "photo_"
 const val PHOTO_SUFFIX = ".jpg"
@@ -39,5 +41,10 @@ fun View.hide() {
 
 fun View.show() {
     visibility = View.VISIBLE
+}
+
+fun BigDecimal.asCurrency(symbol: String = "$"): String {
+    // TODO: Dynamic currency
+    return "$symbol ${NumberFormat.getInstance().format(this)}"
 }
 
