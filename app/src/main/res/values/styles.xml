@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -13,7 +13,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="AppButton" parent="@style/Widget.AppCompat.Button">
-        <item name="android:background">@color/colorAccent</item>
+        <item name="android:background">@drawable/selector_button</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/sp_16</item>
         <item name="android:paddingLeft">@dimen/dp_16</item>
@@ -21,6 +21,17 @@
         <item name="android:paddingTop">@dimen/dp_8</item>
         <item name="android:paddingBottom">@dimen/dp_8</item>
     </style>
+
+    <style name="FlatButton" parent="@style/Widget.AppCompat.Button">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="android:paddingLeft">@dimen/dp_16</item>
+        <item name="android:paddingRight">@dimen/dp_16</item>
+        <item name="android:paddingTop">@dimen/dp_8</item>
+        <item name="android:paddingBottom">@dimen/dp_8</item>
+    </style>
+
 
     <style name="TextTitle" parent="@style/TextAppearance.AppCompat.Headline">
         <item name="android:textSize">@dimen/sp_24</item>
@@ -36,5 +47,9 @@
         <item name="android:textColor">@color/black_effective</item>
     </style>
 
-    <dimen name="sp_14">14sp</dimen>
+    <style name="InputText" parent="@style/Widget.MaterialComponents.TextInputEditText.FilledBox">
+        <item name="android:textSize">@dimen/sp_16</item>
+    </style>
+
+    <color name="transparent">#00FFFFFF</color>
 </resources>

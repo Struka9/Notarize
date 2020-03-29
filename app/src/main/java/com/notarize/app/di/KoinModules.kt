@@ -7,6 +7,7 @@ import com.notarize.app.R
 import com.notarize.app.db.TallyLockDatabase
 import com.notarize.app.di.repos.*
 import com.notarize.app.views.main_activity.MainActivityViewModel
+import com.notarize.app.views.send_fragment.SendFragmentViewModel
 import com.notarize.app.views.take_photo.TakePhotoViewModel
 import com.notarize.app.views.workqueue.WorkQueueViewModel
 import org.koin.android.ext.koin.androidContext
@@ -110,7 +111,6 @@ val appModule = module {
 
     viewModel {
         WorkQueueViewModel(
-            get(),
             get()
         )
     }
@@ -120,5 +120,9 @@ val appModule = module {
             get(),
             get()
         )
+    }
+
+    viewModel {
+        SendFragmentViewModel(get(), get())
     }
 }

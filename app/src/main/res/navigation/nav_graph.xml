@@ -25,6 +25,12 @@
     </fragment>
 
     <fragment
+        android:id="@+id/send"
+        android:name="com.notarize.app.SendFragment"
+        android:label="@string/send"
+        tools:layout="@layout/fragment_send"></fragment>
+
+    <fragment
         android:id="@+id/workQueue"
         android:name="com.notarize.app.views.workqueue.WorkQueueFragment"
         android:label="@string/work_queue"

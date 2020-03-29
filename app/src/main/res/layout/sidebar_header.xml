@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="wrap_content"
     android:background="@color/gray">
 
     <ImageView
@@ -41,6 +41,28 @@
         app:layout_constraintLeft_toLeftOf="@+id/img_account_icon"
         app:layout_constraintTop_toBottomOf="@+id/tv_account_money"
         tools:text="0x2dfBf35bb7c3c0A466A6C48BEBf3eF7576d3C420" />
+    
+    <Button
+        android:id="@+id/bt_send"
+        style="@style/AppButton"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_32"
+        android:text="@string/send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_account_address"
+        app:layout_constraintTop_toBottomOf="@+id/tv_account_address" />
 
-
+    <Button
+        android:id="@+id/bt_receive"
+        style="@style/AppButton"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_32"
+        android:text="@string/receive"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/bt_send"
+        app:layout_constraintTop_toTopOf="@+id/bt_send" />
 </androidx.constraintlayout.widget.ConstraintLayout>

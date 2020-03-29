@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 
 class TallyLockEventService : LifecycleService() {
 
-    private lateinit var disposable: Disposable
+    private var disposable: Disposable? = null
     private val job = Job()
     private val coroutineContext: CoroutineContext = Dispatchers.IO + job
 
@@ -62,7 +62,7 @@ class TallyLockEventService : LifecycleService() {
     override fun onDestroy() {
         super.onDestroy()
         job.complete()
-        disposable.dispose()
+        disposable?.dispose()
     }
 
     override fun onBind(intent: Intent): IBinder? {
