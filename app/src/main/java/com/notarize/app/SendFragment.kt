@@ -60,6 +60,10 @@ class SendFragment : DialogFragment() {
             launchQrReader()
         }
 
+        bt_cancel.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         bt_send.setOnClickListener {
             sendViewModel.sendToAddress()
         }

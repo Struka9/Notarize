@@ -5,10 +5,6 @@
         android:title="@string/work_queue" />
 
     <item
-        android:id="@+id/documentHistory"
-        android:title="@string/document_history" />
-
-    <item
-        android:id="@+id/wallet"
-        android:title="@string/wallet" />
+        android:id="@+id/settings"
+        android:title="@string/settings" />
 </menu>

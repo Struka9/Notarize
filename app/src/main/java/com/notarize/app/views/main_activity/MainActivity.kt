@@ -15,6 +15,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.notarize.app.R
 import com.notarize.app.Status
 import com.notarize.app.ext.asCurrency
+import com.notarize.app.ext.copyTextToClipboard
 import com.notarize.app.ext.hide
 import com.notarize.app.ext.show
 import com.notarize.app.services.TallyLockEventService
@@ -41,6 +42,15 @@ class MainActivity : AppCompatActivity() {
         val receiveButton = header.findViewById<Button>(R.id.bt_receive)
         receiveButton.setOnClickListener {
             mainActivityViewModel.onShowReceiveDialogClick(this@MainActivity)
+        }
+
+        walletAddress.setOnLongClickListener {
+            copyTextToClipboard(
+                walletAddress.text.toString(), getString(R.string.wallet), getString(
+                    R.string.wallet_copied
+                )
+            )
+            return@setOnLongClickListener true
         }
 
         val sendButton = header.findViewById<Button>(R.id.bt_send)

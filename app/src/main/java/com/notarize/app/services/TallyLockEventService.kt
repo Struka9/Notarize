@@ -32,25 +32,26 @@ class TallyLockEventService : LifecycleService() {
         super.onCreate()
         contractRepo.tallyLockContractLiveData
             .observe(this, Observer { tallyLockContract ->
+                disposable?.dispose()
                 disposable = tallyLockContract
-            .logDocumentSignedEventFlowable(
-                DefaultBlockParameterName.LATEST,
-                DefaultBlockParameterName.PENDING
-            )
-            .observeOn(Schedulers.io())
-            .subscribeOn(Schedulers.io())
-            .doOnError {
-                Timber.e(it)
-            }
-            .subscribe({
-                GlobalScope.launch(coroutineContext) {
-                    Timber.d("Updating document ${it._documentHash}")
-                    workSubmissionRepo.updateWorkStatus(it._documentHash, WorkStatus.SUCCESS)
-                }
-            }) {
-                // On error
-                Timber.e(it)
-            }
+                    .logDocumentSignedEventFlowable(
+                        DefaultBlockParameterName.LATEST,
+                        DefaultBlockParameterName.PENDING
+                    )
+                    .observeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.io())
+                    .doOnError {
+                        Timber.e(it)
+                    }
+                    .subscribe({
+                        GlobalScope.launch(coroutineContext) {
+                            Timber.d("Updating document ${it._documentHash}")
+                            workSubmissionRepo.updateWorkStatus(it._documentHash, WorkStatus.SUCCESS)
+                        }
+                    }) {
+                        // On error
+                        Timber.e(it)
+                    }
             })
     }
 

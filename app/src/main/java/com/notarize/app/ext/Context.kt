@@ -1,11 +1,14 @@
 package com.notarize.app.ext
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.icu.text.NumberFormat
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import com.google.zxing.BarcodeFormat
@@ -29,6 +32,22 @@ fun Context.createLoadingDialog(): AlertDialog =
         setCanceledOnTouchOutside(false)
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
+
+fun Context.copyTextToClipboard(text: String?, description: String?, confirmMessage: String) {
+    val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clipData =
+        ClipData.newPlainText(
+            description,
+            text
+        )
+    clipboardManager.setPrimaryClip(clipData)
+
+    Toast.makeText(
+        this,
+        confirmMessage,
+        Toast.LENGTH_LONG
+    ).show()
+}
 
 fun Context.createDialog(layout: View) =
     AlertDialog.Builder(this).run {

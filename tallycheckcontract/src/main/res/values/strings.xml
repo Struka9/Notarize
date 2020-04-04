@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">TallyCheckContract</string>
-    <string name="tallyLockSmartContractAddress">0xd57C76f13344D9D753639647199A07d85EA97Cbd</string>
-    <string name="k_WalletFile">kWalletFile</string>
+    <string name="tallyLockSmartContractAddress">0x4bd5d18617A821Da470B0012F97952C6a713De3b</string>
 </resources>

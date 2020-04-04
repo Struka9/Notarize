@@ -35,6 +35,10 @@
         android:name="com.notarize.app.views.workqueue.WorkQueueFragment"
         android:label="@string/work_queue"
         tools:layout="@layout/fragment_work_queue">
-
     </fragment>
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.notarize.app.SettingsFragment"
+        android:label="@string/settings"></fragment>
 </navigation>

@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/wallet_settings">
-        <Preference android:title="@string/generate_wallet" />
-        <Preference android:title="@string/import_wallet" />
-        <Preference android:title="@string/export_wallet" />
+    <PreferenceCategory android:title="@string/settings">
+        <Preference
+            android:key="@string/key_generate_wallet"
+            android:title="@string/generate_wallet" />
+        <Preference
+            android:key="@string/key_import_wallet"
+            android:title="@string/import_wallet" />
+        <Preference
+            android:key="@string/key_export_wallet"
+            android:title="@string/export_wallet" />
     </PreferenceCategory>
 </PreferenceScreen>
