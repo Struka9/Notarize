@@ -1,9 +1,10 @@
 package com.notarize.app.di
 
+import android.content.ClipboardManager
 import android.content.Context
-import com.notarize.app.EthereumManager
 import com.notarize.app.IpfsManager
 import com.notarize.app.R
+import com.notarize.app.SettingsFragmentViewModel
 import com.notarize.app.db.TallyLockDatabase
 import com.notarize.app.di.repos.*
 import com.notarize.app.views.main_activity.MainActivityViewModel
@@ -14,6 +15,8 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.module
+import org.web3j.protocol.Web3j
+import org.web3j.protocol.websocket.WebSocketService
 import org.web3j.tx.gas.ContractGasProvider
 import org.web3j.tx.gas.DefaultGasProvider
 
@@ -30,6 +33,10 @@ val appModule = module {
         androidContext().getString(R.string.k_WalletSharedPreferences)
     }
 
+    single(qualifier = StringQualifier("mnemonic-pref-key")) {
+        androidContext().getString(R.string.ok)
+    }
+
     single(qualifier = StringQualifier("wallet-password")) {
         androidContext().getString(R.string.temp_password)
     }
@@ -43,6 +50,11 @@ val appModule = module {
     }
 
     single {
+        val context = androidContext()
+        context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    }
+
+    single {
         IpfsManager(
             get(qualifier = StringQualifier("header1")),
             get(qualifier = StringQualifier("header2"))
@@ -50,12 +62,14 @@ val appModule = module {
     }
 
     single {
-        EthereumManager()
-    }
+        val network = get<String>(qualifier = StringQualifier("network-gateway"))
+        val ws = WebSocketService(
+            network,
+            true
+        )
+        ws.connect()
 
-    single {
-        val ethereumManager: EthereumManager = get()
-        ethereumManager.connectToNetwork(get<String>(qualifier = StringQualifier("network-gateway")))
+        return@single Web3j.build(ws)
     }
 
     single<ContractGasProvider> {
@@ -65,7 +79,7 @@ val appModule = module {
     single {
         val context = get<Context>()
         context.getSharedPreferences(
-            context.getString(com.tallycheck.tallycheckcontract.R.string.k_WalletSharedPreferences),
+            context.getString(R.string.k_WalletFileName),
             Context.MODE_PRIVATE
         )
     }
@@ -74,6 +88,7 @@ val appModule = module {
         CredentialsRepoImpl(
             get(),
             get(),
+            get(StringQualifier("mnemonic-pref-key")),
             get(StringQualifier("wallet-pref-key")),
             get(StringQualifier("wallet-password"))
         )
@@ -124,5 +139,15 @@ val appModule = module {
 
     viewModel {
         SendFragmentViewModel(get(), get())
+    }
+
+    viewModel {
+        SettingsFragmentViewModel(
+            get(),
+            get(),
+            get(StringQualifier("mnemonic-pref-key")),
+            get(),
+            get()
+        )
     }
 }
