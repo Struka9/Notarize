@@ -1,3 +1,10 @@
 package com.notarize.app
 
-const val EXTRA_FILE_HASH = "extra-file-hash"
+// The uri of the raw picture taken on this device
+const val EXTRA_FILE_URI = "extra-file-uri"
+// The hash of the JWT certificate submitted to IPFS
+const val EXTRA_IPFS_HASH = "extra-ipfs-hash"
+
+const val EXTRA_TX_HASH = "extra-tx-hash"
+
+const val TAG_SUBMIT_DOC = "work-submit-doc"

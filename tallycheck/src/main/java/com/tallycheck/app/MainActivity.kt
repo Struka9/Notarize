@@ -8,7 +8,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.snackbar.Snackbar
-import com.notarize.app.EthereumManager
 import com.notarize.app.TallyLock
 import com.notarize.app.toByteArray
 import com.tallycheck.app.ext.*
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         val password = getString(R.string.temp_password)
         val notaryCredentials: Credentials? =
             ethereumManager
-                .loadCredentials(this, getString(R.string.k_WalletFileName), password)
+                .loadCredentials(this, getString(R.string.k_WalletFile), password)
 
         Log.d("MainActivity", "Address => ${notaryCredentials?.address}")
 

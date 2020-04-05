@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/takePhoto">
+
+    <fragment
+        android:id="@+id/takePhoto"
+        android:name="com.notarize.app.views.take_photo.TakePhotoFragment"
+        android:label="@string/take_photo"
+        tools:layout="@layout/fragment_photo">
+        <action
+            android:id="@+id/actionPreview"
+            app:destination="@id/photoPreview"
+            app:popUpTo="@+id/takePhoto"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/photoPreview"
+        android:name="com.notarize.app.views.photo_preview.PhotoPreviewFragment"
+        android:label="@string/preview"
+        tools:layout="@layout/fragment_photo_preview">
+    </fragment>
+
+    <fragment
+        android:id="@+id/send"
+        android:name="com.notarize.app.SendFragment"
+        android:label="@string/send"
+        tools:layout="@layout/fragment_send"></fragment>
+
+    <fragment
+        android:id="@+id/workQueue"
+        android:name="com.notarize.app.views.workqueue.WorkQueueFragment"
+        android:label="@string/work_queue"
+        tools:layout="@layout/fragment_work_queue">
+    </fragment>
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.notarize.app.SettingsFragment"
+        android:label="@string/settings"></fragment>
+</navigation>
